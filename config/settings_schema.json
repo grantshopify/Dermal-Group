@@ -1526,6 +1526,60 @@
         "visible_if": "{{ settings.cart_type == 'drawer' }}"
       },
       {
+        "type": "select",
+        "id": "cart_icon_action",
+        "label": "Header cart icon",
+        "options": [
+          {
+            "value": "page",
+            "label": "Goes to the cart page"
+          },
+          {
+            "value": "drawer",
+            "label": "Opens the cart drawer"
+          }
+        ],
+        "default": "page",
+        "info": "The cart drawer still opens after add to cart when that is switched on.",
+        "visible_if": "{{ settings.cart_type == 'drawer' }}"
+      },
+      {
+        "type": "select",
+        "id": "cart_drawer_style",
+        "label": "Cart drawer style",
+        "options": [
+          {
+            "value": "overlay",
+            "label": "Overlay: slides over the page with a dark background"
+          },
+          {
+            "value": "push",
+            "label": "Push: moves the page aside"
+          }
+        ],
+        "default": "overlay",
+        "visible_if": "{{ settings.cart_type == 'drawer' }}"
+      },
+      {
+        "type": "range",
+        "id": "cart_drawer_backdrop",
+        "label": "Cart drawer backdrop darkness",
+        "min": 0,
+        "max": 80,
+        "step": 5,
+        "unit": "%",
+        "default": 50,
+        "visible_if": "{{ settings.cart_type == 'drawer' }}"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_drawer_animation",
+        "label": "Cart drawer slide-in animation",
+        "info": "Off: the cart opens instantly.",
+        "default": true,
+        "visible_if": "{{ settings.cart_type == 'drawer' }}"
+      },
+      {
         "type": "header",
         "content": "Cart rewards progress"
       },
@@ -1560,6 +1614,32 @@
         "id": "cart_reward_second_text",
         "label": "Second reward text",
         "default": "1 Free bottle £70+"
+      },
+      {
+        "type": "text",
+        "id": "cart_reward_first_name",
+        "label": "First reward name in message",
+        "default": "48 hour free shipping"
+      },
+      {
+        "type": "text",
+        "id": "cart_reward_second_name",
+        "label": "Second reward name in message",
+        "default": "24 hour free shipping"
+      },
+      {
+        "type": "text",
+        "id": "cart_reward_message",
+        "label": "Message above the bar",
+        "info": "[amount] is the amount left to spend, [reward] is the next reward name.",
+        "default": "You're [amount] away from [reward]"
+      },
+      {
+        "type": "text",
+        "id": "cart_reward_complete_message",
+        "label": "Message when every reward is unlocked",
+        "info": "[reward] is the second reward name.",
+        "default": "You've unlocked [reward]"
       },
       {
         "type": "header",

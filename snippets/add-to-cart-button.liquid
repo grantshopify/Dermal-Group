@@ -38,6 +38,9 @@
     {% unless can_add_to_cart %}
       disabled
     {% endunless %}
+    {% unless settings.add_to_cart_animation %}
+      data-no-tick
+    {% endunless %}
   >
     {% if show_icon %}
       <span
@@ -48,11 +51,13 @@
       </span>
     {% endif %}
     {{- add_to_cart_text | default: default_add_to_cart_text -}}
-    {% comment %} checkmark burst markup {% endcomment %}
-    <span class="add-to-cart__added">
-      <span class="svg-wrapper add-to-cart__added-icon">
-        {{- 'icon-checkmark-burst.svg' | inline_asset_content -}}
+    {% comment %} checkmark burst markup, only when the add to cart animation is on {% endcomment %}
+    {% if settings.add_to_cart_animation %}
+      <span class="add-to-cart__added">
+        <span class="svg-wrapper add-to-cart__added-icon">
+          {{- 'icon-checkmark-burst.svg' | inline_asset_content -}}
+        </span>
       </span>
-    </span>
+    {% endif %}
   </button>
 </add-to-cart-component>

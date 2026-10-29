@@ -106,9 +106,9 @@ class CartDrawerComponent extends Component {
       event.target instanceof Element ? event.target.closest('dialog:modal') : null
     );
 
-    if (shouldAutoOpen && !sourceModal && !this.#isCartEmpty()) {
-      this.#themeDrawer?.open();
-    }
+    // The drawer doesn't open the moment Add is clicked: it waits below until the add is confirmed
+    // and the cart has re-rendered, so it slides in with the new item already in it. Until then the
+    // add to cart button shows a loader (product-form.js).
 
     event.promise
       ?.then(({ detail }) => {
@@ -134,10 +134,6 @@ class CartDrawerComponent extends Component {
         if (error?.name !== 'AbortError') console.warn('[cart-drawer] Event promise rejected:', error);
       });
   };
-
-  #isCartEmpty() {
-    return Boolean(this.querySelector('.cart-drawer--empty'));
-  }
 
   #updateStickyState() {
     const dialog = this.#dialog;

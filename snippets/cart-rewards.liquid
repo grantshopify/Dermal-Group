@@ -16,6 +16,20 @@
 {% if reward_progress > 100 %}
   {% assign reward_progress = 100 %}
 {% endif %}
+{% liquid
+  # The message above the bar talks about the next reward not yet reached
+  assign reward_first_minor = reward_first_threshold | times: 100
+  assign reward_message = blank
+  if cart.total_price < reward_first_minor
+    assign remaining = reward_first_minor | minus: cart.total_price | money_without_trailing_zeros
+    assign reward_message = settings.cart_reward_message | replace: '[amount]', remaining | replace: '[reward]', settings.cart_reward_first_name
+  elsif cart.total_price < reward_second_threshold_minor
+    assign remaining = reward_second_threshold_minor | minus: cart.total_price | money_without_trailing_zeros
+    assign reward_message = settings.cart_reward_message | replace: '[amount]', remaining | replace: '[reward]', settings.cart_reward_second_name
+  else
+    assign reward_message = settings.cart_reward_complete_message | replace: '[reward]', settings.cart_reward_second_name
+  endif
+%}
 {% if settings.show_cart_rewards %}
   <div
     class="cart-drawer__rewards"
@@ -52,6 +66,9 @@
       --cart-reward-border-radius: {{ settings.cart_reward_border_radius }}px;
     "
   >
+    {% if reward_message != blank %}
+      <p class="cart-drawer__reward-message">{{ reward_message }}</p>
+    {% endif %}
     <div class="cart-drawer__reward-labels">
       <span class="cart-drawer__reward-label--first">{{ settings.cart_reward_first_text }}</span>
       <span class="cart-drawer__reward-label--second">{{ settings.cart_reward_second_text }}</span>
@@ -75,6 +92,14 @@
     border-bottom: var(--cart-reward-border-width) var(--cart-reward-border-style) var(--cart-reward-border-color);
     border-radius: var(--cart-reward-border-radius);
     margin-bottom: 20px;
+  }
+
+  .cart-drawer__reward-message {
+    margin: 0 0 var(--cart-reward-label-gap);
+    color: var(--cart-reward-label-color);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.35;
   }
 
   .cart-drawer__reward-labels {
