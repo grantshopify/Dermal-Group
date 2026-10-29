@@ -48,6 +48,9 @@
       </div>
 
       <div class="cart-page__items">
+        {%- unless cart.empty? -%}
+          {% render 'cart-rewards' %}
+        {%- endunless -%}
         {%- content_for 'block', id: 'cart-page-items', type: '_cart-products' %}
       </div>
 

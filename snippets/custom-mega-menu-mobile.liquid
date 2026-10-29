@@ -1,0 +1,20 @@
+{%- assign menu_setting_id = 'cmm_mega_' | append: mega_slot | append: '_menu' -%}
+{%- assign column_menu = menu_settings[menu_setting_id] -%}
+<details class="custom-mega-mobile">
+  <summary class="menu-drawer__menu-item menu-drawer__menu-item--mainlist menu-drawer__animated-element focus-inset">
+    <span class="menu-drawer__menu-item-text wrap-text">{{ menu_item.title | escape }}</span>
+    <span class="svg-wrapper icon-plus">{{- 'icon-plus.svg' | inline_asset_content -}}</span>
+  </summary>
+  <div class="custom-mega-mobile__content details-content">
+    <ul class="menu-drawer__menu custom-mega-mobile__groups" role="list">
+      <li class="custom-mega-mobile__group">
+          {% if column_menu.title != blank %}<h3 class="custom-mega-mobile__heading">{{ column_menu.title | escape }}</h3>{% endif %}
+          {% if column_menu != blank %}<ul class="menu-drawer__menu" role="list">
+            {% for column_link in column_menu.links %}
+              <li>{% if column_link.links != blank %}<details><summary class="menu-drawer__menu-item menu-drawer__menu-item--parent focus-inset"><span class="menu-drawer__menu-item-text wrap-text">{{ column_link.title | escape }}</span><span class="svg-wrapper icon-plus">{{- 'icon-plus.svg' | inline_asset_content -}}</span></summary><ul class="menu-drawer__menu menu-drawer__menu--grandchildlist details-content" role="list">{% for nested_link in column_link.links %}<li><a href="{{ nested_link.url }}" class="menu-drawer__menu-item menu-drawer__menu-item--child focus-inset"><span class="menu-drawer__menu-item-text wrap-text">{{ nested_link.title | escape }}</span></a></li>{% endfor %}</ul></details>{% else %}<a href="{{ column_link.url }}" class="menu-drawer__menu-item menu-drawer__menu-item--child focus-inset"><span class="menu-drawer__menu-item-text wrap-text">{{ column_link.title | escape }}</span></a>{% endif %}</li>
+            {% endfor %}
+          </ul>{% endif %}
+        </li>
+    </ul>
+  </div>
+</details>

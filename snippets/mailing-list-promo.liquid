@@ -1,0 +1,84 @@
+<a
+    class="header-actions__mailing-list {{ promo_class }}"
+    data-mailing-list-enabled="{{ section.settings.show_mailing_list_promo }}"
+    href="{{ section.settings.mailing_list_promo_link | default: routes.root_url }}"
+    aria-label="{{ section.settings.mailing_list_promo_title | default: 'Join The Mailing List' | escape }}"
+  >
+    <span class="header-actions__mailing-list-icon" aria-hidden="true"></span>
+    <span class="header-actions__mailing-list-copy">
+      <strong>{{ section.settings.mailing_list_promo_title | default: 'Join The Mailing List' | escape }}</strong>
+      <small>{{ section.settings.mailing_list_promo_subtitle | default: 'Exclusive offers and more' | escape }}</small>
+    </span>
+</a>
+
+{% stylesheet %}
+  .header-actions__mailing-list {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 6px 14px;
+    border: 1px solid rgb(var(--color-foreground-rgb) / 0.1);
+    border-radius: 24px;
+    color: var(--color-foreground);
+    text-decoration: none;
+    transition: border-color var(--animation-speed) var(--animation-easing), background-color var(--animation-speed) var(--animation-easing);
+  }
+
+  .header-actions__mailing-list[data-mailing-list-enabled='false'] {
+    display: none;
+  }
+
+  .header-actions__mailing-list--drawer {
+    margin: 20px var(--padding-md) 0;
+    border-radius: 8px;
+    justify-content: flex-start;
+  }
+
+  .header-actions__mailing-list:hover,
+  .header-actions__mailing-list:focus-visible {
+    background-color: rgb(var(--color-foreground-rgb) / 0.06);
+    border-color: rgb(var(--color-foreground-rgb) / 0.24);
+  }
+
+  .header-actions__mailing-list-icon {
+    position: relative;
+    display: block;
+    width: 15px;
+    height: 11px;
+    border: 1.5px solid currentColor;
+    border-radius: 2px;
+    opacity: 0.72;
+  }
+
+  .header-actions__mailing-list-icon::after {
+    position: absolute;
+    top: 1px;
+    left: 2px;
+    width: 8px;
+    height: 8px;
+    border-inline-end: 1.5px solid currentColor;
+    border-block-end: 1.5px solid currentColor;
+    content: '';
+    transform: rotate(45deg);
+  }
+
+  .header-actions__mailing-list-copy {
+    display: grid;
+    gap: 2px;
+    line-height: 1.1;
+  }
+
+  .header-actions__mailing-list-copy strong,
+  .header-actions__mailing-list-copy small {
+    display: block;
+    font: inherit;
+  }
+
+  .header-actions__mailing-list-copy strong { font-size: 11px; font-weight: 600; }
+  .header-actions__mailing-list-copy small { font-size: 10px; opacity: 0.7; }
+
+  @media screen and (max-width: 749px) {
+    .header-actions__mailing-list:not(.header-actions__mailing-list--drawer) { display: none; }
+  }
+{% endstylesheet %}

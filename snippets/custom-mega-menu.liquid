@@ -1,0 +1,41 @@
+{%- assign menu_setting_id = 'cmm_mega_' | append: mega_slot | append: '_menu' -%}
+{%- assign column_menu = menu_settings[menu_setting_id] -%}
+{%- if column_menu == blank -%}
+  {%- assign column_menu = menu_item -%}
+{%- endif -%}
+{%- assign columns_key = 'cmm_mega_' | append: mega_slot | append: '_columns' -%}
+{%- assign single_links_key = 'cmm_mega_' | append: mega_slot | append: '_single_links' -%}
+{%- assign columns = menu_settings[columns_key] | default: menu_settings.cmm_columns | default: 3 -%}
+{%- assign single_links = menu_settings[single_links_key] | default: menu_settings.cmm_single_links | default: true -%}
+{%- assign second_level_size = menu_settings.cmm_second_level_size | default: 14 -%}
+{%- assign second_level_weight = menu_settings.cmm_second_level_weight | default: 400 -%}
+{%- assign third_level_size = menu_settings.cmm_third_level_size | default: 14 -%}
+{%- assign third_level_weight = menu_settings.cmm_third_level_weight | default: 400 -%}
+{%- assign second_level_case = menu_settings.cmm_second_level_case | default: 'none' -%}
+{%- assign third_level_case = menu_settings.cmm_third_level_case | default: 'none' -%}
+<style>
+  .custom-mega-menu { --custom-mega-second-size: {{ second_level_size }}px; --custom-mega-second-weight: {{ second_level_weight }}; --custom-mega-second-case: {{ second_level_case }}; --custom-mega-third-size: {{ third_level_size }}px; --custom-mega-third-weight: {{ third_level_weight }}; --custom-mega-third-case: {{ third_level_case }}; }
+</style>
+<div class="custom-mega-menu" style="--custom-mega-background: {{ menu_settings.cmm_background | default: '#171827' }}; --custom-mega-border: {{ menu_settings.cmm_border_color | default: '#303144' }}; --custom-mega-border-width: {{ menu_settings.cmm_border_width | default: 1 }}px; --custom-mega-radius: {{ menu_settings.cmm_border_radius | default: 12 }}px; --custom-mega-shadow: 0 18px 40px rgb(0 0 0 / 22%); --custom-mega-max-width: 1600px; --custom-mega-padding-block: {{ menu_settings.cmm_padding | default: 24 }}px; --custom-mega-padding-inline: {{ menu_settings.cmm_padding | default: 24 }}px; --custom-mega-column-gap: 22px; --custom-mega-row-gap: 22px; --custom-mega-card-background: {{ menu_settings.cmm_card_background | default: 'rgb(255 255 255 / 4%)' }}; --custom-mega-card-border: {{ menu_settings.cmm_border_color | default: '#303144' }}; --custom-mega-card-border-width: {{ menu_settings.cmm_border_width | default: 1 }}px; --custom-mega-card-radius: {{ menu_settings.cmm_border_radius | default: 12 }}px; --custom-mega-card-padding: {{ menu_settings.cmm_padding | default: 24 }}px; --custom-mega-card-shadow: none; --custom-mega-single-background: {{ menu_settings.cmm_single_link_background | default: '#252838' }}; --custom-mega-single-border: {{ menu_settings.cmm_single_link_border_color | default: '#4a4d60' }}; --custom-mega-heading-color: {{ menu_settings.cmm_heading_color | default: '#ffffff' }}; --custom-mega-heading-size: var(--menu-parent-font-size); --custom-mega-heading-weight: var(--menu-parent-font-weight); --custom-mega-heading-line-height: var(--menu-parent-font-line-height); --custom-mega-heading-spacing: 14px; --custom-mega-link-color: {{ menu_settings.cmm_text_color | default: '#f5f7fa' }}; --custom-mega-link-hover: {{ menu_settings.cmm_hover_color | default: '#f3a6c0' }}; --custom-mega-link-size: var(--menu-child-font-size); --custom-mega-link-weight: var(--menu-child-font-weight); --custom-mega-link-line-height: var(--menu-child-font-line-height); --custom-mega-link-spacing: 7px; --custom-mega-arrow-color: {{ menu_settings.cmm_arrow_color | default: menu_settings.cmm_hover_color | default: '#f3a6c0' }}; --custom-mega-arrow-size: 14px;">
+  <div class="custom-mega-menu__grid" style="grid-template-columns: repeat({{ columns }}, minmax(0, 1fr));">
+    {% if column_menu != blank %}
+      {% for column_link in column_menu.links %}
+        <section class="custom-mega-menu__card{% if column_link.links == blank and single_links %} custom-mega-menu__card--single{% endif %}">
+          <a href="{{ column_link.url }}" class="custom-mega-menu__heading custom-mega-menu__heading--second">
+            <span>{{ column_link.title | escape }}</span>
+            <span class="custom-mega-menu__arrow" aria-hidden="true">&#8594;</span>
+          </a>
+          {% if column_link.links != blank %}
+            <ul class="custom-mega-menu__links list-unstyled">
+              {% for nested_link in column_link.links %}
+                <li><a href="{{ nested_link.url }}" class="custom-mega-menu__link custom-mega-menu__link--third"><span>{{ nested_link.title | escape }}</span>{% if nested_link.links != blank %}<span class="custom-mega-menu__arrow" aria-hidden="true">&#8594;</span>{% endif %}</a>
+                  {% if nested_link.links != blank %}<ul class="custom-mega-menu__nested list-unstyled">{% for child_link in nested_link.links %}<li><a href="{{ child_link.url }}" class="custom-mega-menu__link custom-mega-menu__link--third"><span>{{ child_link.title | escape }}</span></a></li>{% endfor %}</ul>{% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </section>
+      {% endfor %}
+    {% endif %}
+  </div>
+</div>

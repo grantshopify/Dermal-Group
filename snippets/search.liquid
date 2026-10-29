@@ -4,12 +4,51 @@
   @param {string} [style] - The style of the search action.
   @param {string} [class] - Additional classes for the search action.
   @param {string} [display_style] - The display style ('icon' or 'text').
+  @param {object} [search_settings] - Header settings for the desktop search input.
 
   @example
   {% render 'search', style: 'default', class: 'custom-class', display_style: 'icon' %}
 {%- enddoc -%}
 
 {% unless style == 'none' %}
+  {% if search_settings.search_display_type == 'input' and class contains 'search-action--hidden-on-menu' %}
+    <search-button
+      class="search-action{% if display_style == 'text' %} search-action--text{% endif %}{% if class != blank %} {{ class | strip }}{% endif %}"
+    >
+      <button
+        on:click="#search-modal/showDialog"
+        class="button-unstyled header-actions__action"
+        aria-label="{{ 'content.search_input_label' | t }}"
+        aria-haspopup="dialog"
+      >
+        <span class="svg-wrapper">
+          {{ 'icon-search.svg' | inline_asset_content }}
+        </span>
+      </button>
+    </search-button>
+  {% elsif search_settings.search_display_type == 'input' %}
+    <form
+      action="{{ routes.search_url }}"
+      method="get"
+      role="search"
+      class="search-action search-action__form{% if class != blank %} {{ class | strip }}{% endif %}"
+      style="--search-input-max-width: {{ search_settings.search_input_max_width | default: 520 }}px; --search-input-font-size: {{ search_settings.search_input_font_size | default: 16 }}px; --search-input-background: {{ search_settings.search_input_background | default: '#f5f5f5' }}; --search-input-text: {{ search_settings.search_input_text_color | default: '#171717' }}; --search-input-placeholder: {{ search_settings.search_input_placeholder_color | default: '#737373' }}; --search-input-border: {{ search_settings.search_input_border_color | default: '#d6d6d6' }}; --search-input-border-width: {{ search_settings.search_input_border_width | default: 1 }}px; --search-input-radius: {{ search_settings.search_input_radius | default: 24 }}px;"
+    >
+      <label class="visually-hidden" for="HeaderSearchInput-{{ class | handleize | default: 'main' }}">{{ 'content.search_input_label' | t }}</label>
+      <span class="search-action__form-icon svg-wrapper" aria-hidden="true">
+        {{ 'icon-search.svg' | inline_asset_content }}
+      </span>
+      <input
+        id="HeaderSearchInput-{{ class | handleize | default: 'main' }}"
+        class="search-action__input"
+        type="search"
+        name="q"
+        placeholder="{{ 'content.search_input_placeholder' | t }}"
+        autocomplete="off"
+      >
+      <input name="options[prefix]" type="hidden" value="last">
+    </form>
+  {% else %}
   <search-button
     class="search-action{% if display_style == 'text' %} search-action--text{% endif %}{% if class != blank %} {{ class | strip }}{% endif %}"
   >
@@ -28,6 +67,7 @@
       </span>
     </button>
   </search-button>
+  {% endif %}
 {% endunless %}
 
 {% stylesheet %}
@@ -36,6 +76,46 @@
     --search-border-width: var(--style-border-width-inputs);
 
     display: flex;
+  }
+
+  .search-action__form {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: min(100%, var(--search-input-max-width));
+  }
+
+  .search-action__input {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    height: 2.5rem;
+    padding: 0 1rem 0 2.75rem;
+    border: var(--search-input-border-width) solid var(--search-input-border);
+    border-radius: var(--search-input-radius);
+    background-color: var(--search-input-background) !important;
+    color: var(--search-input-text) !important;
+    font: inherit;
+    font-size: var(--search-input-font-size);
+  }
+
+  .search-action__input::placeholder {
+    color: var(--search-input-placeholder);
+    opacity: 1;
+  }
+
+  .search-action__form-icon {
+    position: absolute;
+    left: 1rem;
+    z-index: 1;
+    width: 1.1rem;
+    height: 1.1rem;
+    color: var(--search-input-placeholder);
+    pointer-events: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    .search-action__form { display: none; }
   }
 
   @media screen and (max-width: 749px) {

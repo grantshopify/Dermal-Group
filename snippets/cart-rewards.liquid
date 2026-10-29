@@ -1,0 +1,139 @@
+{%- doc -%}
+  Renders the free delivery rewards progress bar, driven by the cart rewards theme settings.
+  Used in the cart drawer and on the cart page.
+{%- enddoc -%}
+
+{% assign reward_first_threshold = settings.cart_reward_first_threshold | default: 30 %}
+{% assign reward_second_threshold = settings.cart_reward_second_threshold | default: 70 %}
+{% if reward_first_threshold < 1 %}
+  {% assign reward_first_threshold = 1 %}
+{% endif %}
+{% if reward_second_threshold < 1 %}
+  {% assign reward_second_threshold = 1 %}
+{% endif %}
+{% assign reward_second_threshold_minor = reward_second_threshold | times: 100.0 %}
+{% assign reward_progress = cart.total_price | times: 100.0 | divided_by: reward_second_threshold_minor %}
+{% if reward_progress > 100 %}
+  {% assign reward_progress = 100 %}
+{% endif %}
+{% if settings.show_cart_rewards %}
+  <div
+    class="cart-drawer__rewards"
+    role="progressbar"
+    aria-label="Cart rewards progress"
+    aria-valuemin="0"
+    aria-valuemax="{{ reward_second_threshold_minor }}"
+    aria-valuenow="{{ cart.total_price }}"
+    style="
+      --cart-reward-progress: {{ reward_progress }}%;
+      --cart-reward-first-marker: {{ reward_first_threshold | times: 100.0 | divided_by: reward_second_threshold }}%;
+      --cart-reward-fill-color: {{ settings.cart_reward_fill_color }};
+      --cart-reward-track-color: {{ settings.cart_reward_track_color }};
+      --cart-reward-marker-color: {{ settings.cart_reward_marker_color }};
+      --cart-reward-bar-height: {{ settings.cart_reward_bar_height }}px;
+      --cart-reward-bar-radius: {{ settings.cart_reward_bar_radius }}px;
+      --cart-reward-label-gap: {{ settings.cart_reward_label_gap }}px;
+      --cart-reward-label-font-size: {{ settings.cart_reward_label_font_size }}px;
+      --cart-reward-label-font-weight: {{ settings.cart_reward_label_font_weight }};
+      --cart-reward-label-color: {{ settings.cart_reward_label_color }};
+      --cart-reward-first-font-size: {{ settings.cart_reward_first_font_size }}px;
+      --cart-reward-first-font-weight: {{ settings.cart_reward_first_font_weight }};
+      --cart-reward-first-color: {{ settings.cart_reward_first_color }};
+      --cart-reward-second-font-size: {{ settings.cart_reward_second_font_size }}px;
+      --cart-reward-second-font-weight: {{ settings.cart_reward_second_font_weight }};
+      --cart-reward-second-color: {{ settings.cart_reward_second_color }};
+      --cart-reward-first-alignment: {{ settings.cart_reward_first_alignment }};
+      --cart-reward-second-alignment: left;
+      --cart-reward-padding-top: {{ settings.cart_reward_padding_top }}px;
+      --cart-reward-padding-bottom: {{ settings.cart_reward_padding_bottom }}px;
+      --cart-reward-border-style: {{ settings.cart_reward_border_style }};
+      --cart-reward-border-width: {{ settings.cart_reward_border_width }}px;
+      --cart-reward-border-color: {{ settings.cart_reward_border_color }};
+      --cart-reward-border-radius: {{ settings.cart_reward_border_radius }}px;
+    "
+  >
+    <div class="cart-drawer__reward-labels">
+      <span class="cart-drawer__reward-label--first">{{ settings.cart_reward_first_text }}</span>
+      <span class="cart-drawer__reward-label--second">{{ settings.cart_reward_second_text }}</span>
+    </div>
+    <div class="cart-drawer__reward-track" aria-hidden="true">
+      <span class="cart-drawer__reward-fill"></span>
+      <span class="cart-drawer__reward-marker cart-drawer__reward-marker--shipping"></span>
+      <span class="cart-drawer__reward-marker cart-drawer__reward-marker--bottle"></span>
+    </div>
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .cart-drawer__rewards {
+    flex: 0 0 auto;
+    padding: var(--cart-reward-padding-top) var(--cart-drawer-padding, 0px) var(--cart-reward-padding-bottom);
+    color: var(--cart-reward-label-color);
+    font-size: var(--cart-reward-label-font-size);
+    font-weight: var(--cart-reward-label-font-weight);
+    border-top: var(--cart-reward-border-width) var(--cart-reward-border-style) var(--cart-reward-border-color);
+    border-bottom: var(--cart-reward-border-width) var(--cart-reward-border-style) var(--cart-reward-border-color);
+    border-radius: var(--cart-reward-border-radius);
+    margin-bottom: 20px;
+  }
+
+  .cart-drawer__reward-labels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--cart-reward-label-gap);
+    margin-bottom: var(--cart-reward-label-gap);
+    line-height: 1.2;
+  }
+
+  .cart-drawer__reward-labels span {
+    min-width: 0;
+  }
+
+  .cart-drawer__reward-label--first {
+    color: var(--cart-reward-first-color);
+    font-size: var(--cart-reward-first-font-size);
+    font-weight: var(--cart-reward-first-font-weight);
+    text-align: var(--cart-reward-first-alignment);
+  }
+
+  .cart-drawer__reward-label--second {
+    color: var(--cart-reward-second-color);
+    font-size: var(--cart-reward-second-font-size);
+    font-weight: var(--cart-reward-second-font-weight);
+    text-align: var(--cart-reward-second-alignment);
+  }
+
+  .cart-drawer__reward-track {
+    position: relative;
+    height: var(--cart-reward-bar-height);
+    overflow: hidden;
+    border-radius: var(--cart-reward-bar-radius);
+    background: var(--cart-reward-track-color);
+  }
+
+  .cart-drawer__reward-fill {
+    display: block;
+    width: var(--cart-reward-progress);
+    height: 100%;
+    border-radius: inherit;
+    background: var(--cart-reward-fill-color);
+    transition: width var(--animation-speed) var(--animation-timing-fade-in);
+  }
+
+  .cart-drawer__reward-marker {
+    position: absolute;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    background: var(--cart-reward-marker-color);
+    transform: translateX(-50%);
+  }
+
+  .cart-drawer__reward-marker--shipping {
+    left: var(--cart-reward-first-marker);
+  }
+
+  .cart-drawer__reward-marker--bottle {
+    left: 100%;
+  }
+{% endstylesheet %}

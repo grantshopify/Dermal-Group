@@ -1527,6 +1527,287 @@
       },
       {
         "type": "header",
+        "content": "Cart rewards progress"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_cart_rewards",
+        "label": "Show cart rewards progress",
+        "default": true
+      },
+      {
+        "type": "number",
+        "id": "cart_reward_first_threshold",
+        "label": "First reward price",
+        "info": "Price in your store currency.",
+        "default": 30
+      },
+      {
+        "type": "text",
+        "id": "cart_reward_first_text",
+        "label": "First reward text",
+        "default": "Free shipping £30+"
+      },
+      {
+        "type": "number",
+        "id": "cart_reward_second_threshold",
+        "label": "Second reward price",
+        "info": "Price in your store currency.",
+        "default": 70
+      },
+      {
+        "type": "text",
+        "id": "cart_reward_second_text",
+        "label": "Second reward text",
+        "default": "1 Free bottle £70+"
+      },
+      {
+        "type": "header",
+        "content": "Reward bar style"
+      },
+      {
+        "type": "color",
+        "id": "cart_reward_fill_color",
+        "label": "Progress fill color",
+        "default": "#496D4E"
+      },
+      {
+        "type": "color",
+        "id": "cart_reward_track_color",
+        "label": "Progress track color",
+        "default": "#E5E5E5"
+      },
+      {
+        "type": "color",
+        "id": "cart_reward_marker_color",
+        "label": "Milestone marker color",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "range",
+        "id": "cart_reward_bar_height",
+        "label": "Progress bar height",
+        "min": 2,
+        "max": 24,
+        "step": 1,
+        "unit": "px",
+        "default": 8
+      },
+      {
+        "type": "range",
+        "id": "cart_reward_bar_radius",
+        "label": "Progress bar corner radius",
+        "min": 0,
+        "max": 40,
+        "step": 1,
+        "unit": "px",
+        "default": 40
+      },
+      {
+        "type": "range",
+        "id": "cart_reward_label_gap",
+        "label": "Label and bar gap",
+        "min": 0,
+        "max": 32,
+        "step": 1,
+        "unit": "px",
+        "default": 8
+      },
+      {
+        "type": "range",
+        "id": "cart_reward_padding_top",
+        "label": "Reward bar top spacing",
+        "min": 0,
+        "max": 48,
+        "step": 1,
+        "unit": "px",
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "cart_reward_padding_bottom",
+        "label": "Reward bar bottom spacing",
+        "min": 0,
+        "max": 48,
+        "step": 1,
+        "unit": "px",
+        "default": 12
+      },
+      {
+        "type": "select",
+        "id": "cart_reward_border_style",
+        "label": "Reward bar border style",
+        "options": [
+          {
+            "value": "none",
+            "label": "None"
+          },
+          {
+            "value": "solid",
+            "label": "Solid"
+          },
+          {
+            "value": "dashed",
+            "label": "Dashed"
+          },
+          {
+            "value": "dotted",
+            "label": "Dotted"
+          }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "range",
+        "id": "cart_reward_border_width",
+        "label": "Reward bar border width",
+        "min": 0,
+        "max": 8,
+        "step": 1,
+        "unit": "px",
+        "default": 1
+      },
+      {
+        "type": "color",
+        "id": "cart_reward_border_color",
+        "label": "Reward bar border color",
+        "default": "#E5E5E5"
+      },
+      {
+        "type": "range",
+        "id": "cart_reward_border_radius",
+        "label": "Reward bar panel radius",
+        "min": 0,
+        "max": 40,
+        "step": 1,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "header",
+        "content": "First reward label"
+      },
+      {
+        "type": "range",
+        "id": "cart_reward_first_font_size",
+        "label": "First label font size",
+        "min": 8,
+        "max": 32,
+        "step": 1,
+        "unit": "px",
+        "default": 12
+      },
+      {
+        "type": "range",
+        "id": "cart_reward_first_font_weight",
+        "label": "First label font weight",
+        "min": 300,
+        "max": 800,
+        "step": 100,
+        "default": 400
+      },
+      {
+        "type": "color",
+        "id": "cart_reward_first_color",
+        "label": "First label color",
+        "default": "#000000"
+      },
+      {
+        "type": "select",
+        "id": "cart_reward_first_alignment",
+        "label": "First label alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "left"
+      },
+      {
+        "type": "header",
+        "content": "Second reward label"
+      },
+      {
+        "type": "range",
+        "id": "cart_reward_second_font_size",
+        "label": "Second label font size",
+        "min": 8,
+        "max": 32,
+        "step": 1,
+        "unit": "px",
+        "default": 12
+      },
+      {
+        "type": "range",
+        "id": "cart_reward_second_font_weight",
+        "label": "Second label font weight",
+        "min": 300,
+        "max": 800,
+        "step": 100,
+        "default": 400
+      },
+      {
+        "type": "color",
+        "id": "cart_reward_second_color",
+        "label": "Second label color",
+        "default": "#000000"
+      },
+      {
+        "type": "select",
+        "id": "cart_reward_second_alignment",
+        "label": "Second label alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "right"
+      },
+      {
+        "type": "range",
+        "id": "cart_reward_label_font_size",
+        "label": "Base label font size",
+        "min": 8,
+        "max": 32,
+        "step": 1,
+        "unit": "px",
+        "default": 12
+      },
+      {
+        "type": "range",
+        "id": "cart_reward_label_font_weight",
+        "label": "Base label font weight",
+        "min": 300,
+        "max": 800,
+        "step": 100,
+        "default": 400
+      },
+      {
+        "type": "color",
+        "id": "cart_reward_label_color",
+        "label": "Base label color",
+        "default": "#000000"
+      },
+      {
+        "type": "header",
         "content": "t:content.cart_features"
       },
       {
@@ -2114,6 +2395,482 @@
           }
         ],
         "default": "equal-width-buttons"
+      }
+    ]
+  },
+  {
+    "name": "Custom mega menu",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "cmm_custom_mega_menu_enabled",
+        "label": "Enable custom mega menu",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Shared mega menu design"
+      },
+      {
+        "type": "range",
+        "id": "cmm_columns",
+        "label": "Link columns",
+        "min": 1,
+        "max": 5,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "range",
+        "id": "cmm_menu_width",
+        "label": "Menu width",
+        "min": 40,
+        "max": 80,
+        "step": 1,
+        "unit": "%",
+        "default": 68
+      },
+      {
+        "type": "header",
+        "content": "Second and third level typography"
+      },
+      {
+        "type": "range",
+        "id": "cmm_second_level_size",
+        "label": "Second level font size",
+        "min": 10,
+        "max": 24,
+        "step": 1,
+        "unit": "px",
+        "default": 14
+      },
+      {
+        "type": "select",
+        "id": "cmm_second_level_weight",
+        "label": "Second level font weight",
+        "options": [
+          {
+            "value": "400",
+            "label": "Regular"
+          },
+          {
+            "value": "500",
+            "label": "Medium"
+          },
+          {
+            "value": "600",
+            "label": "Semi-bold"
+          },
+          {
+            "value": "700",
+            "label": "Bold"
+          }
+        ],
+        "default": "400"
+      },
+      {
+        "type": "select",
+        "id": "cmm_second_level_case",
+        "label": "Second level text case",
+        "options": [
+          {
+            "value": "none",
+            "label": "Default"
+          },
+          {
+            "value": "uppercase",
+            "label": "Uppercase"
+          },
+          {
+            "value": "capitalize",
+            "label": "Capitalized"
+          }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "range",
+        "id": "cmm_third_level_size",
+        "label": "Third level font size",
+        "min": 10,
+        "max": 24,
+        "step": 1,
+        "unit": "px",
+        "default": 14
+      },
+      {
+        "type": "select",
+        "id": "cmm_third_level_weight",
+        "label": "Third level font weight",
+        "options": [
+          {
+            "value": "400",
+            "label": "Regular"
+          },
+          {
+            "value": "500",
+            "label": "Medium"
+          },
+          {
+            "value": "600",
+            "label": "Semi-bold"
+          },
+          {
+            "value": "700",
+            "label": "Bold"
+          }
+        ],
+        "default": "400"
+      },
+      {
+        "type": "select",
+        "id": "cmm_third_level_case",
+        "label": "Third level text case",
+        "options": [
+          {
+            "value": "none",
+            "label": "Default"
+          },
+          {
+            "value": "uppercase",
+            "label": "Uppercase"
+          },
+          {
+            "value": "capitalize",
+            "label": "Capitalized"
+          }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "header",
+        "content": "Mega menu colors"
+      },
+      {
+        "type": "color",
+        "id": "cmm_background",
+        "label": "Outer menu background",
+        "default": "#101c2d"
+      },
+      {
+        "type": "color",
+        "id": "cmm_card_background",
+        "label": "Group card background",
+        "default": "#171827"
+      },
+      {
+        "type": "color",
+        "id": "cmm_text_color",
+        "label": "Link text color",
+        "default": "#f5f7fa"
+      },
+      {
+        "type": "color",
+        "id": "cmm_heading_color",
+        "label": "Heading text color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "cmm_hover_color",
+        "label": "Link hover color",
+        "default": "#9bd7d5"
+      },
+      {
+        "type": "color",
+        "id": "cmm_arrow_color",
+        "label": "Arrow color",
+        "default": "#9bd7d5"
+      },
+      {
+        "type": "color",
+        "id": "cmm_border_color",
+        "label": "Outer and group border color",
+        "default": "#314158"
+      },
+      {
+        "type": "color",
+        "id": "cmm_single_link_background",
+        "label": "Single link inner background",
+        "default": "#252838"
+      },
+      {
+        "type": "color",
+        "id": "cmm_single_link_border_color",
+        "label": "Single link inner border",
+        "default": "#4a4d60"
+      },
+      {
+        "type": "range",
+        "id": "cmm_border_width",
+        "label": "Border width",
+        "min": 0,
+        "max": 4,
+        "step": 1,
+        "unit": "px",
+        "default": 1
+      },
+      {
+        "type": "range",
+        "id": "cmm_border_radius",
+        "label": "Corner radius",
+        "min": 0,
+        "max": 32,
+        "step": 1,
+        "unit": "px",
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "cmm_padding",
+        "label": "Padding",
+        "min": 8,
+        "max": 80,
+        "step": 1,
+        "unit": "px",
+        "default": 24
+      },
+      {
+        "type": "header",
+        "content": "Mega menu 1"
+      },
+      {
+        "type": "checkbox",
+        "id": "cmm_mega_1_enabled",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "cmm_mega_1_trigger_handle",
+        "label": "Menu item handle"
+      },
+      {
+        "type": "link_list",
+        "id": "cmm_mega_1_menu",
+        "label": "Mega menu links"
+      },
+      {
+        "type": "range",
+        "id": "cmm_mega_1_columns",
+        "label": "Link columns",
+        "min": 1,
+        "max": 5,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "checkbox",
+        "id": "cmm_mega_1_single_links",
+        "label": "Box single-level links",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "cmm_mega_1_menu_width",
+        "label": "Menu width",
+        "min": 40,
+        "max": 80,
+        "step": 1,
+        "unit": "%",
+        "default": 68
+      },
+      {
+        "type": "header",
+        "content": "Mega menu 2"
+      },
+      {
+        "type": "checkbox",
+        "id": "cmm_mega_2_enabled",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "cmm_mega_2_trigger_handle",
+        "label": "Menu item handle"
+      },
+      {
+        "type": "link_list",
+        "id": "cmm_mega_2_menu",
+        "label": "Mega menu links"
+      },
+      {
+        "type": "range",
+        "id": "cmm_mega_2_columns",
+        "label": "Link columns",
+        "min": 1,
+        "max": 5,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "checkbox",
+        "id": "cmm_mega_2_single_links",
+        "label": "Box single-level links",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "cmm_mega_2_menu_width",
+        "label": "Menu width",
+        "min": 40,
+        "max": 80,
+        "step": 1,
+        "unit": "%",
+        "default": 68
+      },
+      {
+        "type": "header",
+        "content": "Mega menu 3"
+      },
+      {
+        "type": "checkbox",
+        "id": "cmm_mega_3_enabled",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "cmm_mega_3_trigger_handle",
+        "label": "Menu item handle"
+      },
+      {
+        "type": "link_list",
+        "id": "cmm_mega_3_menu",
+        "label": "Mega menu links"
+      },
+      {
+        "type": "range",
+        "id": "cmm_mega_3_columns",
+        "label": "Link columns",
+        "min": 1,
+        "max": 5,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "checkbox",
+        "id": "cmm_mega_3_single_links",
+        "label": "Box single-level links",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "cmm_mega_3_menu_width",
+        "label": "Menu width",
+        "min": 40,
+        "max": 80,
+        "step": 1,
+        "unit": "%",
+        "default": 68
+      },
+      {
+        "type": "header",
+        "content": "Mega menu 4"
+      },
+      {
+        "type": "checkbox",
+        "id": "cmm_mega_4_enabled",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "cmm_mega_4_trigger_handle",
+        "label": "Menu item handle"
+      },
+      {
+        "type": "link_list",
+        "id": "cmm_mega_4_menu",
+        "label": "Mega menu links"
+      },
+      {
+        "type": "range",
+        "id": "cmm_mega_4_columns",
+        "label": "Link columns",
+        "min": 1,
+        "max": 5,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "checkbox",
+        "id": "cmm_mega_4_single_links",
+        "label": "Box single-level links",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "cmm_mega_4_menu_width",
+        "label": "Menu width",
+        "min": 40,
+        "max": 80,
+        "step": 1,
+        "unit": "%",
+        "default": 68
+      },
+      {
+        "type": "header",
+        "content": "Mega menu 5"
+      },
+      {
+        "type": "checkbox",
+        "id": "cmm_mega_5_enabled",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "cmm_mega_5_trigger_handle",
+        "label": "Menu item handle"
+      },
+      {
+        "type": "link_list",
+        "id": "cmm_mega_5_menu",
+        "label": "Mega menu links"
+      },
+      {
+        "type": "range",
+        "id": "cmm_mega_5_columns",
+        "label": "Link columns",
+        "min": 1,
+        "max": 5,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "checkbox",
+        "id": "cmm_mega_5_single_links",
+        "label": "Box single-level links",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "cmm_mega_5_menu_width",
+        "label": "Menu width",
+        "min": 40,
+        "max": 80,
+        "step": 1,
+        "unit": "%",
+        "default": 68
+      }
+    ]
+  },
+  {
+    "name": "Dermal Group WhatsApp",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "dg_whatsapp_enabled",
+        "label": "Show WhatsApp button",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "dg_whatsapp_number",
+        "label": "WhatsApp number (international digits, e.g. 447...)",
+        "info": "The button appears when a number is entered."
       }
     ]
   }

@@ -163,6 +163,7 @@
     }
   },
   "content": {
+    "dermal_search_products": "Search for Products...",
     "cancel": "Cancel",
     "discount": "Discount",
     "account_title": "Account",
@@ -371,5 +372,25 @@
       "default_title": "Default Title",
       "sticky_add_to_cart": "Quick add to cart bar"
     }
+  },
+  "modern_footer": {
+    "delivery": "Royal Mail delivery",
+    "cutoff": "4pm UK weekday order cut-off",
+    "returns": "Free UK returns",
+    "returns_detail": "See our returns policy for details",
+    "support": "Here to help",
+    "support_detail": "Product enquiries & order support",
+    "professional": "For aesthetic professionals",
+    "all_products": "Shop all products",
+    "faqs": "FAQs",
+    "account": "My account",
+    "contact": "Contact us",
+    "order_help": "Help with an order",
+    "whatsapp": "Chat on WhatsApp",
+    "order_number": "For order enquiries, please include your order number so we can help you quickly.",
+    "social": "Follow Dermal Group",
+    "notice": "Professional use only. Products should be selected and used by appropriately trained professionals. Please read the product information before purchasing.",
+    "rights": "All rights reserved.",
+    "payments": "Accepted payment methods"
   }
 }
