@@ -1,0 +1,675 @@
+{% comment %}
+  Product Features Section
+  Product display with feature highlights
+{% endcomment %}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    --prod-bg: {{ section.settings.bg_color }};
+    --prod-card-bg: {{ section.settings.card_bg }};
+    --prod-text: {{ section.settings.text_color }};
+    --prod-heading: {{ section.settings.heading_color }};
+    --prod-accent: {{ section.settings.accent_color }};
+    --prod-border: {{ section.settings.border_color }};
+  }
+
+  #shopify-section-{{ section.id }} .prod-features-section {
+    background: var(--prod-bg);
+    padding: {{ section.settings.padding_top }}px 20px {{ section.settings.padding_bottom }}px;
+  }
+
+  #shopify-section-{{ section.id }} .prod-features-container {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+  }
+
+  #shopify-section-{{ section.id }} .prod-features-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  #shopify-section-{{ section.id }} .prod-features-image {
+    position: relative;
+  }
+
+  #shopify-section-{{ section.id }} .prod-features-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    display: block;
+  }
+
+  #shopify-section-{{ section.id }} .prod-features-placeholder {
+    width: 100%;
+    aspect-ratio: 1;
+    background: var(--prod-border);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #shopify-section-{{ section.id }} .prod-features-placeholder svg {
+    width: 80px;
+    height: 80px;
+    fill: var(--prod-text);
+    opacity: 0.3;
+  }
+
+  #shopify-section-{{ section.id }} .prod-features-badge {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: var(--prod-accent);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  #shopify-section-{{ section.id }} .prod-features-content {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  #shopify-section-{{ section.id }} .prod-features-title {
+    font-size: {{ section.settings.heading_size }}px;
+    font-weight: 600;
+    color: var(--prod-heading);
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  #shopify-section-{{ section.id }} .prod-features-desc {
+    font-size: 15px;
+    color: var(--prod-text);
+    line-height: 1.7;
+  }
+
+  #shopify-section-{{ section.id }} .prod-features-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  #shopify-section-{{ section.id }} .prod-feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px;
+    background: var(--prod-card-bg);
+    border: 1px solid var(--prod-border);
+    border-radius: 8px;
+  }
+
+  #shopify-section-{{ section.id }} .prod-feature-icon {
+    width: 36px;
+    height: 36px;
+    background: rgba(191, 140, 76, 0.1);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  #shopify-section-{{ section.id }} .prod-feature-icon svg {
+    width: 18px;
+    height: 18px;
+    fill: var(--prod-accent);
+  }
+
+  /* Custom uploaded icon: no accent plate behind the artwork. */
+  #shopify-section-{{ section.id }} .prod-feature-icon--image {
+    background: transparent;
+  }
+
+  #shopify-section-{{ section.id }} .prod-feature-icon--image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  #shopify-section-{{ section.id }} .prod-feature-text h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--prod-heading);
+    margin: 0 0 4px;
+  }
+
+  #shopify-section-{{ section.id }} .prod-feature-text p {
+    font-size: 13px;
+    color: var(--prod-text);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  #shopify-section-{{ section.id }} .prod-features-price {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  #shopify-section-{{ section.id }} .prod-price-current {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--prod-heading);
+  }
+
+  #shopify-section-{{ section.id }} .prod-price-compare {
+    font-size: 16px;
+    color: var(--prod-text);
+    text-decoration: line-through;
+  }
+
+  #shopify-section-{{ section.id }} .prod-features-btn {
+    display: inline-block;
+    padding: 14px 32px;
+    background: var(--prod-accent);
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 6px;
+    transition: opacity 0.3s ease;
+    text-align: center;
+  }
+
+  #shopify-section-{{ section.id }} .prod-features-btn:hover {
+    opacity: 0.9;
+  }
+
+  @media (max-width: 768px) {
+    #shopify-section-{{ section.id }} .prod-features-grid {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+
+    #shopify-section-{{ section.id }} .prod-features-title {
+      font-size: calc({{ section.settings.heading_size }}px * 0.75);
+    }
+  }
+</style>
+
+<div class="prod-features-section">
+  <div class="prod-features-container">
+    <div class="prod-features-grid">
+      <div class="prod-features-image">
+        {% if section.settings.image != blank %}
+          <img src="{{ section.settings.image | image_url: width: 800 }}" alt="{{ section.settings.image.alt | default: section.settings.title }}">
+        {% else %}
+          <div class="prod-features-placeholder">
+            <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+          </div>
+        {% endif %}
+        {% if section.settings.badge != blank %}
+          <span class="prod-features-badge">{{ section.settings.badge }}</span>
+        {% endif %}
+      </div>
+
+      <div class="prod-features-content">
+        {% if section.settings.title != blank %}
+          <h2 class="prod-features-title">{{ section.settings.title }}</h2>
+        {% endif %}
+
+        {% if section.settings.description != blank %}
+          <p class="prod-features-desc">{{ section.settings.description }}</p>
+        {% endif %}
+
+        <div class="prod-features-list">
+          {% for block in section.blocks %}
+            <div class="prod-feature-item" {{ block.shopify_attributes }}>
+              {%- liquid
+                assign f_icon = block.settings.icon | default: 'check'
+                assign f_image = block.settings.icon_image
+              -%}
+              {%- if f_image != blank -%}
+                <div class="prod-feature-icon prod-feature-icon--image">
+                  <img src="{{ f_image | image_url: width: 96 }}" alt="" width="96" height="96" loading="lazy">
+                </div>
+              {%- elsif f_icon != 'none' -%}
+                <div class="prod-feature-icon">
+                  {%- case f_icon -%}
+                    {%- when 'star' -%}
+                      <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    {%- when 'users' -%}
+                      <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    {%- when 'check' -%}
+                      <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                    {%- when 'chat' -%}
+                      <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+                    {%- when 'heart' -%}
+                      <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    {%- when 'shield' -%}
+                      <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                    {%- when 'truck' -%}
+                      <svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                    {%- when 'tag' -%}
+                      <svg viewBox="0 0 24 24"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58s1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41s-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg>
+                    {%- when 'clock' -%}
+                      <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                    {%- when 'thumb_up' -%}
+                      <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
+                    {%- when 'award' -%}
+                      <svg viewBox="0 0 24 24"><path d="M12 2C9.24 2 7 4.24 7 7c0 2.05 1.24 3.81 3 4.58V22l2-2 2 2V11.58c1.76-.77 3-2.53 3-4.58 0-2.76-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3z"/></svg>
+                    {%- when 'globe' -%}
+                      <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2s.07-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/></svg>
+                    {%- when 'gift' -%}
+                      <svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"/></svg>
+                    {%- when 'support' -%}
+                      <svg viewBox="0 0 24 24"><path d="M21 12.22C21 6.73 16.74 3 12 3c-4.69 0-9 3.65-9 9.28-.6.34-1 .98-1 1.72v2c0 1.1.9 2 2 2h1v-6.1c0-3.87 3.13-7 7-7s7 3.13 7 7V19h-8v2h8c1.1 0 2-.9 2-2v-1.22c.59-.31 1-.92 1-1.64v-2.3c0-.7-.41-1.31-1-1.62zM9 14c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm6 0c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm3-2.5c-.46-2.72-2.83-4.8-5.68-4.8-2.89 0-6 2.39-5.75 6.14 2.36-.96 4.13-3.06 4.63-5.62 1.24 2.49 3.79 4.2 6.75 4.28h.05z"/></svg>
+                    {%- when 'leaf' -%}
+                      <svg viewBox="0 0 24 24"><path d="M6.05 8.05c-2.73 2.73-2.73 7.15-.02 9.88 1.47-3.4 4.09-6.24 7.36-7.93-2.77 2.34-4.71 5.61-5.39 9.32 2.6 1.23 5.8.78 7.95-1.37C19.27 14.87 20 4 20 4S9.09 4.73 6.05 8.05z"/></svg>
+                    {%- when 'lock' -%}
+                      <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM9 8V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z"/></svg>
+                  {%- endcase -%}
+                </div>
+              {%- endif -%}
+              <div class="prod-feature-text">
+                <h4>{{ block.settings.title }}</h4>
+                <p>{{ block.settings.text }}</p>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+        {% if section.settings.price != blank %}
+          <div class="prod-features-price">
+            <span class="prod-price-current">{{ section.settings.price }}</span>
+            {% if section.settings.compare_price != blank %}
+              <span class="prod-price-compare">{{ section.settings.compare_price }}</span>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        {% if section.settings.button_text != blank %}
+          <a href="{{ section.settings.button_link }}" class="prod-features-btn">{{ section.settings.button_text }}</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{%- comment -%}
+  SShop typography controls - added automatically when the section is installed.
+{%- endcomment -%}
+{%- liquid
+  assign sshop_font_source = section.settings.sshop_font_source | default: 'theme'
+  assign sshop_body_font = ''
+  assign sshop_heading_font = ''
+
+  if sshop_font_source == 'custom'
+    assign sshop_body_font = section.settings.sshop_body_font
+    assign sshop_heading_font = section.settings.sshop_heading_font
+  elsif sshop_font_source == 'theme'
+    assign sshop_body_font = settings.type_body_font | default: settings.body_font | default: settings.font_body | default: settings.base_font
+    assign sshop_heading_font = settings.type_header_font | default: settings.type_heading_font | default: settings.heading_font | default: settings.font_heading
+  endif
+
+  if sshop_heading_font == blank
+    assign sshop_heading_font = sshop_body_font
+  endif
+-%}
+{%- if sshop_body_font != blank -%}
+  {%- liquid
+    assign sshop_body_bold = sshop_body_font | font_modify: 'weight', 'bolder'
+    assign sshop_body_italic = sshop_body_font | font_modify: 'style', 'italic'
+    assign sshop_body_bold_italic = sshop_body_bold | font_modify: 'style', 'italic'
+    assign sshop_heading_bold = sshop_heading_font | font_modify: 'weight', 'bolder'
+  -%}
+  <style data-sshop-typography="{{ section.id }}">
+    {{ sshop_body_font | font_face: font_display: 'swap' }}
+    {{ sshop_body_bold | font_face: font_display: 'swap' }}
+    {{ sshop_body_italic | font_face: font_display: 'swap' }}
+    {{ sshop_body_bold_italic | font_face: font_display: 'swap' }}
+    {{ sshop_heading_font | font_face: font_display: 'swap' }}
+    {{ sshop_heading_bold | font_face: font_display: 'swap' }}
+
+    #shopify-section-{{ section.id }} {
+      --sshop-font-body: {{ sshop_body_font.family }}, {{ sshop_body_font.fallback_families }};
+      --sshop-font-heading: {{ sshop_heading_font.family }}, {{ sshop_heading_font.fallback_families }};
+    }
+
+    #shopify-section-{{ section.id }},
+    #shopify-section-{{ section.id }} :where(
+      p, a, span:not([class*="icon"]), li, dt, dd, td, th, caption,
+      label, legend, figcaption, blockquote, cite, q, small, strong, b,
+      em, u, mark, address, time, output, summary, details,
+      div:not([class*="icon"]), button, input, select, textarea, option
+    ) {
+      font-family: var(--sshop-font-body) !important;
+    }
+
+    #shopify-section-{{ section.id }} :where(h1, h2, h3, h4, h5, h6) {
+      font-family: var(--sshop-font-heading) !important;
+    }
+
+    {%- comment -%}
+      A word picked out inside a heading is an em, a strong or a span, which
+      the body rule above also names — at the same specificity. Without this
+      rule, placed after it, the accent word switched to the body font.
+    {%- endcomment -%}
+    #shopify-section-{{ section.id }} :where(h1, h2, h3, h4, h5, h6) :where(*:not([class*="icon"])) {
+      font-family: var(--sshop-font-heading) !important;
+    }
+  </style>
+{%- endif -%}
+{% schema %}
+{
+  "name": "SShop:Product Features",
+  "tag": "section",
+  "class": "product-features-section sshop-section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Product Image"
+    },
+    {
+      "type": "text",
+      "id": "badge",
+      "label": "Badge Text",
+      "default": "Best Seller"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Product Title",
+      "default": "Premium Product Name"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Discover our premium product with exceptional quality and outstanding features designed for your needs."
+    },
+    {
+      "type": "text",
+      "id": "price",
+      "label": "Price",
+      "default": "$99.00"
+    },
+    {
+      "type": "text",
+      "id": "compare_price",
+      "label": "Compare at Price",
+      "default": "$129.00"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Add to Cart"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading Size",
+      "min": 24,
+      "max": 48,
+      "step": 2,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max Width",
+      "min": 900,
+      "max": 1400,
+      "step": 20,
+      "default": 1100,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "default": 60,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "default": 60,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card Background",
+      "default": "#f8f8f8"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color",
+      "default": "#BF8C4C"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border Color",
+      "default": "#e5e5e5"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "select",
+      "id": "sshop_font_source",
+      "label": "Fonts",
+      "options": [
+        {
+          "value": "theme",
+          "label": "Use my theme fonts"
+        },
+        {
+          "value": "section",
+          "label": "Use this section's original fonts"
+        },
+        {
+          "value": "custom",
+          "label": "Use custom fonts"
+        }
+      ],
+      "default": "theme",
+      "info": "Theme fonts are used by default so this section matches the rest of your store."
+    },
+    {
+      "type": "font_picker",
+      "id": "sshop_heading_font",
+      "label": "Custom heading font",
+      "default": "assistant_n4",
+      "info": "Only applied when \"Use custom fonts\" is selected."
+    },
+    {
+      "type": "font_picker",
+      "id": "sshop_body_font",
+      "label": "Custom body font",
+      "default": "assistant_n4",
+      "info": "Only applied when \"Use custom fonts\" is selected."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            {
+              "value": "star",
+              "label": "Star"
+            },
+            {
+              "value": "users",
+              "label": "Customers"
+            },
+            {
+              "value": "check",
+              "label": "Check"
+            },
+            {
+              "value": "chat",
+              "label": "Review bubble"
+            },
+            {
+              "value": "heart",
+              "label": "Heart"
+            },
+            {
+              "value": "shield",
+              "label": "Shield"
+            },
+            {
+              "value": "truck",
+              "label": "Shipping"
+            },
+            {
+              "value": "tag",
+              "label": "Price tag"
+            },
+            {
+              "value": "clock",
+              "label": "Clock"
+            },
+            {
+              "value": "thumb_up",
+              "label": "Thumbs up"
+            },
+            {
+              "value": "award",
+              "label": "Award"
+            },
+            {
+              "value": "globe",
+              "label": "Globe"
+            },
+            {
+              "value": "gift",
+              "label": "Gift"
+            },
+            {
+              "value": "support",
+              "label": "Support"
+            },
+            {
+              "value": "leaf",
+              "label": "Eco / natural"
+            },
+            {
+              "value": "lock",
+              "label": "Secure"
+            },
+            {
+              "value": "none",
+              "label": "No icon"
+            }
+          ],
+          "default": "check"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Custom icon image",
+          "info": "Optional. Replaces the icon above."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Feature Title",
+          "default": "Premium Quality"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Feature Description",
+          "default": "Made with the finest materials for lasting durability."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "SShop:Product Features",
+      "category": "Product",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Premium Quality",
+            "text": "Made with the finest materials for lasting durability."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Fast Shipping",
+            "text": "Free shipping on orders over $50 with 2-day delivery."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "30-Day Returns",
+            "text": "Not satisfied? Return within 30 days for a full refund."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "24/7 Support",
+            "text": "Our team is always here to help with any questions."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
