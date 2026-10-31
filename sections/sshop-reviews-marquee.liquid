@@ -1,0 +1,912 @@
+{% comment %}
+  Reviews Marquee Section
+  Infinite scrolling ticker-style reviews with modern design
+{% endcomment %}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    --rm-bg: {{ section.settings.bg_color }};
+    --rm-card-bg: {{ section.settings.card_bg }};
+    --rm-text: {{ section.settings.text_color }};
+    --rm-heading: {{ section.settings.heading_color }};
+    --rm-accent: {{ section.settings.accent_color }};
+    --rm-star: {{ section.settings.star_color }};
+    --rm-speed: {{ section.settings.scroll_speed }}s;
+  }
+
+  #shopify-section-{{ section.id }} * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  #shopify-section-{{ section.id }} .rm-section {
+    background: var(--rm-bg);
+    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .rm-header {
+    text-align: center;
+    padding: 0 20px;
+    margin-bottom: 50px;
+  }
+
+  #shopify-section-{{ section.id }} .rm-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--rm-accent);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+
+  #shopify-section-{{ section.id }} .rm-eyebrow svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+  }
+
+  #shopify-section-{{ section.id }} .rm-title {
+    font-size: {{ section.settings.heading_size }}px;
+    font-weight: 800;
+    color: var(--rm-heading);
+    margin-bottom: 16px;
+    line-height: 1.1;
+  }
+
+  #shopify-section-{{ section.id }} .rm-subtitle {
+    font-size: 18px;
+    color: var(--rm-text);
+    opacity: 0.7;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  /* Marquee Container */
+  #shopify-section-{{ section.id }} .rm-marquee-wrapper {
+    position: relative;
+    padding: 20px 0;
+  }
+
+  #shopify-section-{{ section.id }} .rm-marquee-wrapper::before,
+  #shopify-section-{{ section.id }} .rm-marquee-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 150px;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  #shopify-section-{{ section.id }} .rm-marquee-wrapper::before {
+    left: 0;
+    background: linear-gradient(90deg, var(--rm-bg) 0%, transparent 100%);
+  }
+
+  #shopify-section-{{ section.id }} .rm-marquee-wrapper::after {
+    right: 0;
+    background: linear-gradient(-90deg, var(--rm-bg) 0%, transparent 100%);
+  }
+
+  #shopify-section-{{ section.id }} .rm-track {
+    display: flex;
+    width: max-content;
+    animation: rm-scroll-{{ section.id }} var(--rm-speed) linear infinite;
+  }
+
+  #shopify-section-{{ section.id }} .rm-track:hover {
+    animation-play-state: paused;
+  }
+
+  #shopify-section-{{ section.id }} .rm-track.reverse {
+    animation-name: rm-scroll-reverse-{{ section.id }};
+  }
+
+  @keyframes rm-scroll-{{ section.id }} {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  @keyframes rm-scroll-reverse-{{ section.id }} {
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+  }
+
+  #shopify-section-{{ section.id }} .rm-card {
+    flex-shrink: 0;
+    width: {{ section.settings.card_width }}px;
+    background: var(--rm-card-bg);
+    border-radius: {{ section.settings.border_radius }}px;
+    padding: 28px;
+    margin: 0 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.05);
+  }
+
+  #shopify-section-{{ section.id }} .rm-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+  }
+
+  #shopify-section-{{ section.id }} .rm-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  #shopify-section-{{ section.id }} .rm-stars {
+    display: flex;
+    gap: 3px;
+  }
+
+  #shopify-section-{{ section.id }} .rm-stars svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  #shopify-section-{{ section.id }} .rm-stars .filled { fill: var(--rm-star); }
+  #shopify-section-{{ section.id }} .rm-stars .empty { fill: #ddd; }
+
+  #shopify-section-{{ section.id }} .rm-platform-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  #shopify-section-{{ section.id }} .rm-platform-badge.google {
+    background: #e8f0fe;
+    color: #1a73e8;
+  }
+
+  #shopify-section-{{ section.id }} .rm-platform-badge.shopify {
+    background: #e3f5e1;
+    color: #008060;
+  }
+
+  #shopify-section-{{ section.id }} .rm-platform-badge.trustpilot {
+    background: #e6f8f0;
+    color: #00b67a;
+  }
+
+  #shopify-section-{{ section.id }} .rm-platform-badge.rm-platform-badge-custom {
+    background: transparent;
+    padding: 0;
+  }
+
+  #shopify-section-{{ section.id }} .rm-platform-badge.rm-platform-badge-custom img {
+    display: block;
+    height: 20px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  #shopify-section-{{ section.id }} .rm-review-text {
+    font-size: {{ section.settings.text_size }}px;
+    line-height: 1.65;
+    color: var(--rm-text);
+    margin-bottom: 20px;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .rm-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  #shopify-section-{{ section.id }} .rm-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, var(--rm-accent), #667eea);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #shopify-section-{{ section.id }} .rm-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  #shopify-section-{{ section.id }} .rm-avatar-initial {
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  #shopify-section-{{ section.id }} .rm-author-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--rm-heading);
+  }
+
+  #shopify-section-{{ section.id }} .rm-author-info {
+    font-size: 13px;
+    color: var(--rm-text);
+    opacity: 0.6;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  #shopify-section-{{ section.id }} .rm-author-info svg {
+    width: 14px;
+    height: 14px;
+    fill: #22c55e;
+  }
+
+  /* Second row */
+  #shopify-section-{{ section.id }} .rm-row-2 {
+    margin-top: 25px;
+  }
+
+  @media (max-width: 768px) {
+    #shopify-section-{{ section.id }} .rm-section {
+      padding: {{ section.settings.padding_top_mobile }}px 0 {{ section.settings.padding_bottom_mobile }}px;
+    }
+    #shopify-section-{{ section.id }} .rm-title {
+      font-size: {{ section.settings.heading_size_mobile }}px;
+    }
+    #shopify-section-{{ section.id }} .rm-card {
+      width: 300px;
+      padding: 22px;
+    }
+    #shopify-section-{{ section.id }} .rm-marquee-wrapper::before,
+    #shopify-section-{{ section.id }} .rm-marquee-wrapper::after {
+      width: 50px;
+    }
+    #shopify-section-{{ section.id }} .rm-header {
+      margin-bottom: 30px;
+    }
+  }
+</style>
+
+<div class="rm-section">
+  <div class="rm-header">
+    {% if section.settings.eyebrow != blank %}
+    <div class="rm-eyebrow">
+      <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      {{ section.settings.eyebrow }}
+    </div>
+    {% endif %}
+    {% if section.settings.title != blank %}
+      <h2 class="rm-title">{{ section.settings.title }}</h2>
+    {% endif %}
+    {% if section.settings.subtitle != blank %}
+      <p class="rm-subtitle">{{ section.settings.subtitle }}</p>
+    {% endif %}
+  </div>
+
+  <!-- Row 1 -->
+  <div class="rm-marquee-wrapper">
+    <div class="rm-track">
+      {% for block in section.blocks %}
+        <div class="rm-card" {{ block.shopify_attributes }}>
+          <div class="rm-card-header">
+            <div class="rm-stars">
+              {% for i in (1..5) %}
+                {% if i <= block.settings.rating %}
+                  <svg class="filled" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                {% else %}
+                  <svg class="empty" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                {% endif %}
+              {% endfor %}
+            </div>
+            {% if block.settings.custom_logo != blank %}
+            <span class="rm-platform-badge rm-platform-badge-custom"><img src="{{ block.settings.custom_logo | image_url: width: 80 }}" alt="" loading="lazy"></span>
+            {% elsif block.settings.platform != 'none' %}
+            <span class="rm-platform-badge {{ block.settings.platform }}">{{ block.settings.platform }}</span>
+            {% endif %}
+          </div>
+
+          <p class="rm-review-text">{{ block.settings.text }}</p>
+
+          <div class="rm-author">
+            <div class="rm-avatar">
+              {% if block.settings.avatar != blank %}
+                <img src="{{ block.settings.avatar | image_url: width: 100 }}" alt="{{ block.settings.name | escape }}" loading="lazy">
+              {% else %}
+                <span class="rm-avatar-initial">{{ block.settings.name | slice: 0 }}</span>
+              {% endif %}
+            </div>
+            <div>
+              <div class="rm-author-name">{{ block.settings.name }}</div>
+              <div class="rm-author-info">
+                {% if block.settings.verified %}
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                {% endif %}
+                {{ block.settings.info }}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+      <!-- Duplicate for infinite scroll -->
+      {% for block in section.blocks %}
+        <div class="rm-card">
+          <div class="rm-card-header">
+            <div class="rm-stars">
+              {% for i in (1..5) %}
+                {% if i <= block.settings.rating %}
+                  <svg class="filled" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                {% else %}
+                  <svg class="empty" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                {% endif %}
+              {% endfor %}
+            </div>
+            {% if block.settings.custom_logo != blank %}
+            <span class="rm-platform-badge rm-platform-badge-custom"><img src="{{ block.settings.custom_logo | image_url: width: 80 }}" alt="" loading="lazy"></span>
+            {% elsif block.settings.platform != 'none' %}
+            <span class="rm-platform-badge {{ block.settings.platform }}">{{ block.settings.platform }}</span>
+            {% endif %}
+          </div>
+          <p class="rm-review-text">{{ block.settings.text }}</p>
+          <div class="rm-author">
+            <div class="rm-avatar">
+              {% if block.settings.avatar != blank %}
+                <img src="{{ block.settings.avatar | image_url: width: 100 }}" alt="{{ block.settings.name | escape }}" loading="lazy">
+              {% else %}
+                <span class="rm-avatar-initial">{{ block.settings.name | slice: 0 }}</span>
+              {% endif %}
+            </div>
+            <div>
+              <div class="rm-author-name">{{ block.settings.name }}</div>
+              <div class="rm-author-info">
+                {% if block.settings.verified %}
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                {% endif %}
+                {{ block.settings.info }}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  {% if section.settings.show_second_row %}
+  <!-- Row 2 (Reverse Direction) -->
+  <div class="rm-marquee-wrapper rm-row-2">
+    <div class="rm-track reverse">
+      {% for block in section.blocks %}
+        <div class="rm-card">
+          <div class="rm-card-header">
+            <div class="rm-stars">
+              {% for i in (1..5) %}
+                {% if i <= block.settings.rating %}
+                  <svg class="filled" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                {% else %}
+                  <svg class="empty" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                {% endif %}
+              {% endfor %}
+            </div>
+            {% if block.settings.custom_logo != blank %}
+            <span class="rm-platform-badge rm-platform-badge-custom"><img src="{{ block.settings.custom_logo | image_url: width: 80 }}" alt="" loading="lazy"></span>
+            {% elsif block.settings.platform != 'none' %}
+            <span class="rm-platform-badge {{ block.settings.platform }}">{{ block.settings.platform }}</span>
+            {% endif %}
+          </div>
+          <p class="rm-review-text">{{ block.settings.text }}</p>
+          <div class="rm-author">
+            <div class="rm-avatar">
+              {% if block.settings.avatar != blank %}
+                <img src="{{ block.settings.avatar | image_url: width: 100 }}" alt="{{ block.settings.name | escape }}" loading="lazy">
+              {% else %}
+                <span class="rm-avatar-initial">{{ block.settings.name | slice: 0 }}</span>
+              {% endif %}
+            </div>
+            <div>
+              <div class="rm-author-name">{{ block.settings.name }}</div>
+              <div class="rm-author-info">
+                {% if block.settings.verified %}
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                {% endif %}
+                {{ block.settings.info }}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+      {% for block in section.blocks %}
+        <div class="rm-card">
+          <div class="rm-card-header">
+            <div class="rm-stars">
+              {% for i in (1..5) %}
+                {% if i <= block.settings.rating %}
+                  <svg class="filled" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                {% else %}
+                  <svg class="empty" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                {% endif %}
+              {% endfor %}
+            </div>
+            {% if block.settings.custom_logo != blank %}
+            <span class="rm-platform-badge rm-platform-badge-custom"><img src="{{ block.settings.custom_logo | image_url: width: 80 }}" alt="" loading="lazy"></span>
+            {% elsif block.settings.platform != 'none' %}
+            <span class="rm-platform-badge {{ block.settings.platform }}">{{ block.settings.platform }}</span>
+            {% endif %}
+          </div>
+          <p class="rm-review-text">{{ block.settings.text }}</p>
+          <div class="rm-author">
+            <div class="rm-avatar">
+              {% if block.settings.avatar != blank %}
+                <img src="{{ block.settings.avatar | image_url: width: 100 }}" alt="{{ block.settings.name | escape }}" loading="lazy">
+              {% else %}
+                <span class="rm-avatar-initial">{{ block.settings.name | slice: 0 }}</span>
+              {% endif %}
+            </div>
+            <div>
+              <div class="rm-author-name">{{ block.settings.name }}</div>
+              <div class="rm-author-info">
+                {% if block.settings.verified %}
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                {% endif %}
+                {{ block.settings.info }}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+{%- comment -%}
+  SShop typography controls - added automatically when the section is installed.
+{%- endcomment -%}
+{%- liquid
+  assign sshop_font_source = section.settings.sshop_font_source | default: 'theme'
+  assign sshop_body_font = ''
+  assign sshop_heading_font = ''
+
+  if sshop_font_source == 'custom'
+    assign sshop_body_font = section.settings.sshop_body_font
+    assign sshop_heading_font = section.settings.sshop_heading_font
+  elsif sshop_font_source == 'theme'
+    assign sshop_body_font = settings.type_body_font | default: settings.body_font | default: settings.font_body | default: settings.base_font
+    assign sshop_heading_font = settings.type_header_font | default: settings.type_heading_font | default: settings.heading_font | default: settings.font_heading
+  endif
+
+  if sshop_heading_font == blank
+    assign sshop_heading_font = sshop_body_font
+  endif
+-%}
+{%- if sshop_body_font != blank -%}
+  {%- liquid
+    assign sshop_body_bold = sshop_body_font | font_modify: 'weight', 'bolder'
+    assign sshop_body_italic = sshop_body_font | font_modify: 'style', 'italic'
+    assign sshop_body_bold_italic = sshop_body_bold | font_modify: 'style', 'italic'
+    assign sshop_heading_bold = sshop_heading_font | font_modify: 'weight', 'bolder'
+  -%}
+  <style data-sshop-typography="{{ section.id }}">
+    {{ sshop_body_font | font_face: font_display: 'swap' }}
+    {{ sshop_body_bold | font_face: font_display: 'swap' }}
+    {{ sshop_body_italic | font_face: font_display: 'swap' }}
+    {{ sshop_body_bold_italic | font_face: font_display: 'swap' }}
+    {{ sshop_heading_font | font_face: font_display: 'swap' }}
+    {{ sshop_heading_bold | font_face: font_display: 'swap' }}
+
+    #shopify-section-{{ section.id }} {
+      --sshop-font-body: {{ sshop_body_font.family }}, {{ sshop_body_font.fallback_families }};
+      --sshop-font-heading: {{ sshop_heading_font.family }}, {{ sshop_heading_font.fallback_families }};
+    }
+
+    #shopify-section-{{ section.id }},
+    #shopify-section-{{ section.id }} :where(
+      p, a, span:not([class*="icon"]), li, dt, dd, td, th, caption,
+      label, legend, figcaption, blockquote, cite, q, small, strong, b,
+      em, u, mark, address, time, output, summary, details,
+      div:not([class*="icon"]), button, input, select, textarea, option
+    ) {
+      font-family: var(--sshop-font-body) !important;
+    }
+
+    #shopify-section-{{ section.id }} :where(h1, h2, h3, h4, h5, h6) {
+      font-family: var(--sshop-font-heading) !important;
+    }
+
+    {%- comment -%}
+      A word picked out inside a heading is an em, a strong or a span, which
+      the body rule above also names — at the same specificity. Without this
+      rule, placed after it, the accent word switched to the body font.
+    {%- endcomment -%}
+    #shopify-section-{{ section.id }} :where(h1, h2, h3, h4, h5, h6) :where(*:not([class*="icon"])) {
+      font-family: var(--sshop-font-heading) !important;
+    }
+  </style>
+{%- endif -%}
+{% schema %}
+{
+  "name": "SShop:Reviews Marquee",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow Text",
+      "default": "5-Star Reviews"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Loved by Thousands"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Join thousands of happy customers worldwide"
+    },
+    {
+      "type": "header",
+      "content": "Marquee Settings"
+    },
+    {
+      "type": "range",
+      "id": "scroll_speed",
+      "label": "Scroll Speed",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "default": 40,
+      "unit": "s"
+    },
+    {
+      "type": "range",
+      "id": "card_width",
+      "label": "Card Width",
+      "min": 280,
+      "max": 450,
+      "step": 10,
+      "default": 360,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_second_row",
+      "label": "Show Second Row",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading Size",
+      "min": 28,
+      "max": 64,
+      "step": 2,
+      "default": 48,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "label": "Heading Size Mobile",
+      "min": 24,
+      "max": 44,
+      "step": 2,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Review Text Size",
+      "min": 13,
+      "max": 18,
+      "step": 1,
+      "default": 15,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 70,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 70,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding Top Mobile",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "default": 50,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding Bottom Mobile",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "default": 50,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#fafafa"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#18181b"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#52525b"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color",
+      "default": "#8b5cf6"
+    },
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Star Color",
+      "default": "#fbbf24"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Card Border Radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "select",
+      "id": "sshop_font_source",
+      "label": "Fonts",
+      "options": [
+        {
+          "value": "theme",
+          "label": "Use my theme fonts"
+        },
+        {
+          "value": "section",
+          "label": "Use this section's original fonts"
+        },
+        {
+          "value": "custom",
+          "label": "Use custom fonts"
+        }
+      ],
+      "default": "theme",
+      "info": "Theme fonts are used by default so this section matches the rest of your store."
+    },
+    {
+      "type": "font_picker",
+      "id": "sshop_heading_font",
+      "label": "Custom heading font",
+      "default": "assistant_n4",
+      "info": "Only applied when \"Use custom fonts\" is selected."
+    },
+    {
+      "type": "font_picker",
+      "id": "sshop_body_font",
+      "label": "Custom body font",
+      "default": "assistant_n4",
+      "info": "Only applied when \"Use custom fonts\" is selected."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        {
+          "type": "range",
+          "id": "rating",
+          "label": "Rating",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "select",
+          "id": "platform",
+          "label": "Review Platform",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "google",
+              "label": "Google"
+            },
+            {
+              "value": "shopify",
+              "label": "Shopify"
+            },
+            {
+              "value": "trustpilot",
+              "label": "Trustpilot"
+            }
+          ],
+          "default": "google",
+          "info": "Built-in text badges. To use any other platform (Facebook, Yelp, Amazon…), upload a logo below instead."
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_logo",
+          "label": "Custom platform logo",
+          "info": "Optional. Upload your own platform/review-site logo. When set, it replaces the text badge above."
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Review Text",
+          "default": "Absolutely amazing product! The quality exceeded my expectations and shipping was incredibly fast. Highly recommend!"
+        },
+        {
+          "type": "image_picker",
+          "id": "avatar",
+          "label": "Author Photo"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "John Doe"
+        },
+        {
+          "type": "text",
+          "id": "info",
+          "label": "Info",
+          "default": "Verified Purchase"
+        },
+        {
+          "type": "checkbox",
+          "id": "verified",
+          "label": "Verified Badge",
+          "default": true
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "SShop:Reviews Marquee",
+      "category": "Social Proof",
+      "blocks": [
+        {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "platform": "google",
+            "text": "This product is absolutely incredible! I've been using it for months and the results speak for themselves. Best purchase ever!",
+            "name": "Amanda Lee",
+            "info": "Verified Buyer",
+            "verified": true
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "platform": "shopify",
+            "text": "Fast shipping, great packaging, and the product quality is top-notch. Will definitely be ordering more!",
+            "name": "James Wilson",
+            "info": "Repeat Customer",
+            "verified": true
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "platform": "trustpilot",
+            "text": "I was skeptical at first but WOW! This exceeded all my expectations. The customer service was also fantastic!",
+            "name": "Sarah Chen",
+            "info": "First Purchase",
+            "verified": true
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "rating": 4,
+            "platform": "google",
+            "text": "Great product overall. Minor packaging issue but the company resolved it immediately. Very satisfied!",
+            "name": "Michael Brown",
+            "info": "Verified Buyer",
+            "verified": true
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "platform": "shopify",
+            "text": "Best investment I've made this year. Quality is unmatched and it arrived earlier than expected!",
+            "name": "Emily Davis",
+            "info": "Loyal Customer",
+            "verified": true
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "platform": "trustpilot",
+            "text": "Bought this as a gift and they absolutely loved it! Already ordering another one for myself.",
+            "name": "Robert Garcia",
+            "info": "Gift Purchase",
+            "verified": true
+          }
+        }
+      ]
+    }
+  ],
+  "class": "sshop-section"
+}
+{% endschema %}
