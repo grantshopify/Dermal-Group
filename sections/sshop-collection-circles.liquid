@@ -1,0 +1,965 @@
+{% comment %}
+  Collection Circles
+  A scrollable or wrapping row of circular category links, each framed by a
+  gradient or solid ring. Self-contained: all styles are scoped inline, so the
+  section installs as a single file with no companion stylesheet.
+{% endcomment %}
+
+{%- liquid
+  # ─── Header
+  assign show_header = section.settings.show_header
+  assign eyebrow = section.settings.eyebrow
+  assign heading = section.settings.heading
+  assign subheading = section.settings.subheading
+  assign align = section.settings.align | default: 'center'
+
+  # ─── Row & discs
+  assign flow = section.settings.flow | default: 'scroll'
+  assign disc_size = section.settings.disc_size | default: 132
+  assign disc_size_sm = section.settings.disc_size_mobile | default: 92
+  assign frame_style = section.settings.frame_style | default: 'gradient'
+  assign frame_thickness = section.settings.frame_thickness | default: 3
+  assign frame_inset = section.settings.frame_inset | default: 3
+
+  # ─── Captions
+  assign show_caption = section.settings.show_caption
+  assign caption_weight = section.settings.caption_weight | default: '600'
+  assign caption_size = section.settings.caption_size | default: 15
+  assign caption_offset = section.settings.caption_offset | default: 14
+
+  # ─── Type
+  assign title_size = section.settings.title_size | default: 30
+
+  # ─── Palette
+  assign canvas = section.settings.canvas_color
+  if section.settings.canvas_clear
+    assign canvas = 'transparent'
+  endif
+  assign ink = section.settings.ink_color
+  assign highlight = section.settings.highlight_color
+  assign frame_one = section.settings.frame_color_one
+  assign frame_two = section.settings.frame_color_two
+  assign frame_three = section.settings.frame_color_three
+  assign frame_flat = section.settings.frame_color_flat
+  assign inset_color = section.settings.inset_color
+
+  # ─── Measurements
+  assign spread = section.settings.spread | default: 'edge'
+  assign shell = section.settings.shell | default: 'standard'
+  assign shell_max = '1200px'
+  if shell == 'wide'
+    assign shell_max = '1480px'
+  elsif shell == 'flush'
+    assign shell_max = '100%'
+  endif
+  assign shell_radius = section.settings.shell_radius | default: 0
+  assign step = section.settings.step | default: 28
+  assign space_above = section.settings.space_above | default: 72
+  assign space_below = section.settings.space_below | default: 72
+
+  # ─── Visible discs, so an emptied row collapses instead of leaving a gap
+  assign live_discs = 0
+  for block in section.blocks
+    if block.settings.show_disc
+      assign live_discs = live_discs | plus: 1
+    endif
+  endfor
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .ss-circlenav {
+    --ssc-canvas: {{ canvas }};
+    --ssc-ink: {{ ink }};
+    --ssc-highlight: {{ highlight }};
+    --ssc-frame-1: {{ frame_one }};
+    --ssc-frame-2: {{ frame_two }};
+    --ssc-frame-3: {{ frame_three }};
+    --ssc-frame-flat: {{ frame_flat }};
+    --ssc-inset: {{ inset_color }};
+    --ssc-frame-w: {{ frame_thickness }}px;
+    --ssc-frame-gap: {{ frame_inset }}px;
+    --ssc-size: {{ disc_size }}px;
+    --ssc-size-sm: {{ disc_size_sm }}px;
+    --ssc-step: {{ step }}px;
+    --ssc-caption-size: {{ caption_size }}px;
+    --ssc-caption-offset: {{ caption_offset }}px;
+    --ssc-caption-weight: {{ caption_weight }};
+    --ssc-title-size: {{ title_size }}px;
+    --ssc-shell-max: {{ shell_max }};
+    --ssc-shell-radius: {{ shell_radius }}px;
+
+    background: var(--ssc-canvas);
+    color: var(--ssc-ink);
+    padding-top: {{ space_above }}px;
+    padding-bottom: {{ space_below }}px;
+  }
+
+  #shopify-section-{{ section.id }} .ss-circlenav--boxed {
+    border-radius: var(--ssc-shell-radius);
+    margin-left: auto;
+    margin-right: auto;
+    max-width: var(--ssc-shell-max);
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .ss-circlenav__shell {
+    max-width: var(--ssc-shell-max);
+    margin: 0 auto;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  /* ── Header ─────────────────────────────────────────────── */
+  #shopify-section-{{ section.id }} .ss-circlenav__head {
+    margin-bottom: 28px;
+    max-width: 640px;
+  }
+  #shopify-section-{{ section.id }} .ss-circlenav--mid .ss-circlenav__head {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+  }
+  #shopify-section-{{ section.id }} .ss-circlenav__eyebrow {
+    margin: 0 0 8px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ssc-highlight);
+  }
+  #shopify-section-{{ section.id }} .ss-circlenav__title {
+    margin: 0;
+    font-size: var(--ssc-title-size);
+    line-height: 1.2;
+    font-weight: 700;
+    color: var(--ssc-ink);
+  }
+  #shopify-section-{{ section.id }} .ss-circlenav__title strong,
+  #shopify-section-{{ section.id }} .ss-circlenav__title b,
+  #shopify-section-{{ section.id }} .ss-circlenav__title em {
+    color: var(--ssc-highlight);
+    font-style: normal;
+  }
+  #shopify-section-{{ section.id }} .ss-circlenav__sub {
+    margin: 10px 0 0;
+    font-size: 15px;
+    line-height: 1.55;
+    opacity: .75;
+  }
+
+  /* ── Row ────────────────────────────────────────────────── */
+  #shopify-section-{{ section.id }} .ss-circlenav__row {
+    display: flex;
+    gap: var(--ssc-step);
+    align-items: flex-start;
+  }
+  #shopify-section-{{ section.id }} .ss-circlenav--mid .ss-circlenav__row {
+    justify-content: center;
+  }
+
+  /* Scroll flow: one row that scrolls, snapping disc by disc. */
+  #shopify-section-{{ section.id }} .ss-circlenav--scroll .ss-circlenav__row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+    /* Let discs reach the screen edge on mobile while staying in the shell. */
+    margin-left: -20px;
+    margin-right: -20px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  #shopify-section-{{ section.id }} .ss-circlenav--scroll .ss-circlenav__row::-webkit-scrollbar {
+    display: none;
+  }
+  #shopify-section-{{ section.id }} .ss-circlenav--scroll .ss-circlenav__disc {
+    scroll-snap-align: start;
+  }
+  /* Once everything fits, a centred row should stay centred, not left-packed. */
+  #shopify-section-{{ section.id }} .ss-circlenav--scroll.ss-circlenav--mid .ss-circlenav__row {
+    justify-content: safe center;
+  }
+
+  /* Wrap flow: rows that reflow — the count of discs drives the width, so a
+     row with two discs never leaves dead columns behind. */
+  #shopify-section-{{ section.id }} .ss-circlenav--wrap .ss-circlenav__row {
+    flex-wrap: wrap;
+    row-gap: calc(var(--ssc-step) + 4px);
+  }
+
+  /* ── Disc ───────────────────────────────────────────────── */
+  #shopify-section-{{ section.id }} .ss-circlenav__disc {
+    flex: 0 0 auto;
+    width: var(--ssc-size);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 12px;
+  }
+  #shopify-section-{{ section.id }} a.ss-circlenav__disc:focus-visible {
+    outline: 2px solid var(--ssc-highlight);
+    outline-offset: 4px;
+  }
+
+  #shopify-section-{{ section.id }} .ss-circlenav__frame {
+    width: var(--ssc-size);
+    height: var(--ssc-size);
+    border-radius: 50%;
+    padding: var(--ssc-frame-w);
+    box-sizing: border-box;
+    display: block;
+    transition: transform .28s ease;
+  }
+  #shopify-section-{{ section.id }} .ss-circlenav--gradient .ss-circlenav__frame {
+    background: conic-gradient(
+      from 150deg,
+      var(--ssc-frame-1),
+      var(--ssc-frame-2),
+      var(--ssc-frame-3),
+      var(--ssc-frame-1)
+    );
+  }
+  #shopify-section-{{ section.id }} .ss-circlenav--solid .ss-circlenav__frame {
+    background: var(--ssc-frame-flat);
+  }
+  #shopify-section-{{ section.id }} .ss-circlenav--bare .ss-circlenav__frame {
+    background: none;
+    padding: 0;
+  }
+
+  #shopify-section-{{ section.id }} .ss-circlenav__well {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    padding: var(--ssc-frame-gap);
+    box-sizing: border-box;
+    background: var(--ssc-inset);
+    display: block;
+  }
+  #shopify-section-{{ section.id }} .ss-circlenav--bare .ss-circlenav__well {
+    padding: 0;
+    background: none;
+  }
+
+  #shopify-section-{{ section.id }} .ss-circlenav__photo,
+  #shopify-section-{{ section.id }} .ss-circlenav__photo svg {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    background: rgba(0, 0, 0, .04);
+  }
+
+  #shopify-section-{{ section.id }} .ss-circlenav__caption {
+    margin-top: var(--ssc-caption-offset);
+    font-size: var(--ssc-caption-size);
+    font-weight: var(--ssc-caption-weight);
+    line-height: 1.3;
+    color: var(--ssc-ink);
+    transition: color .2s ease;
+  }
+
+  #shopify-section-{{ section.id }} a.ss-circlenav__disc:hover .ss-circlenav__frame {
+    transform: translateY(-3px) scale(1.03);
+  }
+  #shopify-section-{{ section.id }} a.ss-circlenav__disc:hover .ss-circlenav__caption {
+    color: var(--ssc-highlight);
+  }
+
+  /* ── Responsive ─────────────────────────────────────────── */
+  @media screen and (max-width: 860px) {
+    #shopify-section-{{ section.id }} .ss-circlenav {
+      --ssc-size: var(--ssc-size-sm);
+      --ssc-title-size: calc({{ title_size }}px * .82);
+    }
+    #shopify-section-{{ section.id }} .ss-circlenav__disc {
+      width: var(--ssc-size-sm);
+    }
+    #shopify-section-{{ section.id }} .ss-circlenav__frame {
+      width: var(--ssc-size-sm);
+      height: var(--ssc-size-sm);
+    }
+    #shopify-section-{{ section.id }} .ss-circlenav__head {
+      margin-bottom: 22px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #shopify-section-{{ section.id }} .ss-circlenav__frame,
+    #shopify-section-{{ section.id }} .ss-circlenav__caption {
+      transition: none;
+    }
+    #shopify-section-{{ section.id }} a.ss-circlenav__disc:hover .ss-circlenav__frame {
+      transform: none;
+    }
+  }
+
+  {%- unless request.design_mode -%}
+    {%- if section.settings.hide_desktop -%}
+      @media screen and (min-width: 861px) {
+        #shopify-section-{{ section.id }} { display: none; }
+      }
+    {%- endif -%}
+    {%- if section.settings.hide_mobile -%}
+      @media screen and (max-width: 860px) {
+        #shopify-section-{{ section.id }} { display: none; }
+      }
+    {%- endif -%}
+  {%- endunless -%}
+{%- endstyle -%}
+
+{%- liquid
+  case frame_style
+    when 'gradient'
+      assign shell_class = 'ss-circlenav ss-circlenav--gradient'
+    when 'solid'
+      assign shell_class = 'ss-circlenav ss-circlenav--solid'
+    else
+      assign shell_class = 'ss-circlenav ss-circlenav--bare'
+  endcase
+  if flow == 'wrap'
+    assign shell_class = shell_class | append: ' ss-circlenav--wrap'
+  else
+    assign shell_class = shell_class | append: ' ss-circlenav--scroll'
+  endif
+  if align == 'left'
+    assign shell_class = shell_class | append: ' ss-circlenav--start'
+  else
+    assign shell_class = shell_class | append: ' ss-circlenav--mid'
+  endif
+  if spread == 'boxed'
+    assign shell_class = shell_class | append: ' ss-circlenav--boxed'
+  endif
+-%}
+
+<div class="{{ shell_class }}">
+  <div class="ss-circlenav__shell">
+    {%- if show_header -%}
+      <div class="ss-circlenav__head">
+        {%- if eyebrow != blank -%}
+          <p class="ss-circlenav__eyebrow">{{ eyebrow | escape }}</p>
+        {%- endif -%}
+        {%- if heading != blank -%}
+          <h2 class="ss-circlenav__title">{{ heading }}</h2>
+        {%- endif -%}
+        {%- if subheading != blank -%}
+          <p class="ss-circlenav__sub">{{ subheading | escape }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if live_discs > 0 -%}
+      <div class="ss-circlenav__row">
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign d = block.settings
+            # A typed Link wins over the picked Collection, so an existing
+            # setup keeps behaving exactly as it did. `.url` is required:
+            # a collection setting rendered directly yields the handle.
+            assign target = d.link
+            if target == blank
+              assign target = d.collection.url
+            endif
+            assign caption = d.caption
+            # Fall back to the collection's own title so a disc is never
+            # unlabelled just because the field was left empty.
+            if caption == blank
+              assign caption = d.collection.title
+            endif
+          -%}
+          {%- if d.show_disc -%}
+            {%- if target != blank -%}
+              <a
+                class="ss-circlenav__disc"
+                href="{{ target }}"
+                aria-label="{{ caption | default: d.image.alt | default: 'Collection' | escape }}"
+                {{ block.shopify_attributes }}
+              >
+            {%- else -%}
+              <div class="ss-circlenav__disc" {{ block.shopify_attributes }}>
+            {%- endif -%}
+
+            <span class="ss-circlenav__frame">
+              <span class="ss-circlenav__well">
+                {%- if d.image != blank -%}
+                  <img
+                    class="ss-circlenav__photo"
+                    src="{{ d.image | image_url: width: 480 }}"
+                    srcset="{{ d.image | image_url: width: 240 }} 240w, {{ d.image | image_url: width: 480 }} 480w, {{ d.image | image_url: width: 720 }} 720w"
+                    sizes="(max-width: 860px) {{ disc_size_sm }}px, {{ disc_size }}px"
+                    width="{{ d.image.width }}"
+                    height="{{ d.image.height }}"
+                    loading="lazy"
+                    alt="{% unless show_caption and caption != blank %}{{ d.image.alt | default: caption | escape }}{% endunless %}"
+                  >
+                {%- else -%}
+                  {%- assign slot = forloop.index0 | modulo: 6 | plus: 1 -%}
+                  {{ 'collection-' | append: slot | placeholder_svg_tag: 'ss-circlenav__photo' }}
+                {%- endif -%}
+              </span>
+            </span>
+
+            {%- if show_caption and caption != blank -%}
+              <span class="ss-circlenav__caption">{{ caption | escape }}</span>
+            {%- endif -%}
+
+            {%- if target != blank -%}</a>{%- else -%}</div>{%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{%- comment -%}
+  SShop typography controls - added automatically when the section is installed.
+{%- endcomment -%}
+{%- liquid
+  assign sshop_font_source = section.settings.sshop_font_source | default: 'theme'
+  assign sshop_body_font = ''
+  assign sshop_heading_font = ''
+
+  if sshop_font_source == 'custom'
+    assign sshop_body_font = section.settings.sshop_body_font
+    assign sshop_heading_font = section.settings.sshop_heading_font
+  elsif sshop_font_source == 'theme'
+    assign sshop_body_font = settings.type_body_font | default: settings.body_font | default: settings.font_body | default: settings.base_font
+    assign sshop_heading_font = settings.type_header_font | default: settings.type_heading_font | default: settings.heading_font | default: settings.font_heading
+  endif
+
+  if sshop_heading_font == blank
+    assign sshop_heading_font = sshop_body_font
+  endif
+-%}
+{%- if sshop_body_font != blank -%}
+  {%- liquid
+    assign sshop_body_bold = sshop_body_font | font_modify: 'weight', 'bolder'
+    assign sshop_body_italic = sshop_body_font | font_modify: 'style', 'italic'
+    assign sshop_body_bold_italic = sshop_body_bold | font_modify: 'style', 'italic'
+    assign sshop_heading_bold = sshop_heading_font | font_modify: 'weight', 'bolder'
+  -%}
+  <style data-sshop-typography="{{ section.id }}">
+    {{ sshop_body_font | font_face: font_display: 'swap' }}
+    {{ sshop_body_bold | font_face: font_display: 'swap' }}
+    {{ sshop_body_italic | font_face: font_display: 'swap' }}
+    {{ sshop_body_bold_italic | font_face: font_display: 'swap' }}
+    {{ sshop_heading_font | font_face: font_display: 'swap' }}
+    {{ sshop_heading_bold | font_face: font_display: 'swap' }}
+
+    #shopify-section-{{ section.id }} {
+      --sshop-font-body: {{ sshop_body_font.family }}, {{ sshop_body_font.fallback_families }};
+      --sshop-font-heading: {{ sshop_heading_font.family }}, {{ sshop_heading_font.fallback_families }};
+    }
+
+    #shopify-section-{{ section.id }},
+    #shopify-section-{{ section.id }} :where(
+      p, a, span:not([class*="icon"]), li, dt, dd, td, th, caption,
+      label, legend, figcaption, blockquote, cite, q, small, strong, b,
+      em, u, mark, address, time, output, summary, details,
+      div:not([class*="icon"]), button, input, select, textarea, option
+    ) {
+      font-family: var(--sshop-font-body) !important;
+    }
+
+    #shopify-section-{{ section.id }} :where(h1, h2, h3, h4, h5, h6) {
+      font-family: var(--sshop-font-heading) !important;
+    }
+
+    {%- comment -%}
+      A word picked out inside a heading is an em, a strong or a span, which
+      the body rule above also names — at the same specificity. Without this
+      rule, placed after it, the accent word switched to the body font.
+    {%- endcomment -%}
+    #shopify-section-{{ section.id }} :where(h1, h2, h3, h4, h5, h6) :where(*:not([class*="icon"])) {
+      font-family: var(--sshop-font-heading) !important;
+    }
+  </style>
+{%- endif -%}
+{% schema %}
+{
+  "name": "SShop:Collection Circles",
+  "tag": "section",
+  "class": "ss-collection-circles sshop-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_header",
+      "label": "Show header",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Browse"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "info": "Bold any word to paint it in the highlight color.",
+      "default": "Shop the <strong>collections</strong>"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Every category, one click away."
+    },
+    {
+      "type": "select",
+      "id": "align",
+      "label": "Alignment",
+      "info": "Aligns the header and, when the discs fit, the row itself.",
+      "options": [
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Row and discs"
+    },
+    {
+      "type": "select",
+      "id": "flow",
+      "label": "Row behaviour",
+      "options": [
+        {
+          "value": "scroll",
+          "label": "One row that scrolls"
+        },
+        {
+          "value": "wrap",
+          "label": "Wrap onto several rows"
+        }
+      ],
+      "default": "scroll"
+    },
+    {
+      "type": "range",
+      "id": "disc_size",
+      "label": "Disc size (desktop)",
+      "min": 64,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 132
+    },
+    {
+      "type": "range",
+      "id": "disc_size_mobile",
+      "label": "Disc size (mobile)",
+      "min": 48,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 92
+    },
+    {
+      "type": "select",
+      "id": "frame_style",
+      "label": "Ring style",
+      "options": [
+        {
+          "value": "gradient",
+          "label": "Gradient ring"
+        },
+        {
+          "value": "solid",
+          "label": "Solid ring"
+        },
+        {
+          "value": "none",
+          "label": "No ring"
+        }
+      ],
+      "default": "gradient"
+    },
+    {
+      "type": "range",
+      "id": "frame_thickness",
+      "label": "Ring thickness",
+      "min": 1,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "default": 3,
+      "info": "Ignored when the ring style is “No ring”."
+    },
+    {
+      "type": "range",
+      "id": "frame_inset",
+      "label": "Ring gap",
+      "min": 0,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "default": 3,
+      "info": "Inset between the ring and the photo."
+    },
+    {
+      "type": "header",
+      "content": "Captions"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_caption",
+      "label": "Show captions",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "caption_weight",
+      "label": "Caption weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Regular"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semibold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "range",
+      "id": "caption_size",
+      "label": "Caption size",
+      "min": 11,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "caption_offset",
+      "label": "Space below disc",
+      "min": 4,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Heading size",
+      "min": 18,
+      "max": 56,
+      "step": 1,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "checkbox",
+      "id": "canvas_clear",
+      "label": "Transparent background",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "canvas_color",
+      "label": "Background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "ink_color",
+      "label": "Text",
+      "default": "#18181B"
+    },
+    {
+      "type": "color",
+      "id": "highlight_color",
+      "label": "Highlight",
+      "info": "Eyebrow, bold words in the heading, and caption hover.",
+      "default": "#B42870"
+    },
+    {
+      "type": "color",
+      "id": "inset_color",
+      "label": "Ring gap color",
+      "info": "Sits between the ring and the photo. Match your background on dark sections.",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "frame_color_one",
+      "label": "Gradient ring — start",
+      "default": "#7A3FF2"
+    },
+    {
+      "type": "color",
+      "id": "frame_color_two",
+      "label": "Gradient ring — middle",
+      "default": "#E0479E"
+    },
+    {
+      "type": "color",
+      "id": "frame_color_three",
+      "label": "Gradient ring — end",
+      "default": "#F78B3C"
+    },
+    {
+      "type": "color",
+      "id": "frame_color_flat",
+      "label": "Solid ring color",
+      "default": "#18181B"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "select",
+      "id": "spread",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "edge",
+          "label": "Full width"
+        },
+        {
+          "value": "boxed",
+          "label": "Boxed"
+        }
+      ],
+      "default": "edge"
+    },
+    {
+      "type": "range",
+      "id": "shell_radius",
+      "label": "Boxed corner radius",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "select",
+      "id": "shell",
+      "label": "Content width",
+      "info": "How much of the screen the row spans.",
+      "options": [
+        {
+          "value": "standard",
+          "label": "Standard"
+        },
+        {
+          "value": "wide",
+          "label": "Wide"
+        },
+        {
+          "value": "flush",
+          "label": "Full bleed"
+        }
+      ],
+      "default": "standard"
+    },
+    {
+      "type": "range",
+      "id": "step",
+      "label": "Gap between discs",
+      "min": 8,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "space_above",
+      "label": "Padding top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "space_below",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "header",
+      "content": "Visibility"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_desktop",
+      "label": "Hide on desktop",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_mobile",
+      "label": "Hide on mobile",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "select",
+      "id": "sshop_font_source",
+      "label": "Fonts",
+      "options": [
+        {
+          "value": "theme",
+          "label": "Use my theme fonts"
+        },
+        {
+          "value": "section",
+          "label": "Use this section's original fonts"
+        },
+        {
+          "value": "custom",
+          "label": "Use custom fonts"
+        }
+      ],
+      "default": "theme",
+      "info": "Theme fonts are used by default so this section matches the rest of your store."
+    },
+    {
+      "type": "font_picker",
+      "id": "sshop_heading_font",
+      "label": "Custom heading font",
+      "default": "assistant_n4",
+      "info": "Only applied when \"Use custom fonts\" is selected."
+    },
+    {
+      "type": "font_picker",
+      "id": "sshop_body_font",
+      "label": "Custom body font",
+      "default": "assistant_n4",
+      "info": "Only applied when \"Use custom fonts\" is selected."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "disc",
+      "name": "Circle",
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_disc",
+          "label": "Show this circle",
+          "default": true
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Caption",
+          "info": "Leave empty to use the collection's own title."
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection",
+          "info": "Makes the whole circle link to this collection."
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "info": "Optional. Overrides the collection above — use it for a page, product or external URL."
+        }
+      ]
+    }
+  ],
+  "max_blocks": 15,
+  "presets": [
+    {
+      "name": "SShop:Collection Circles",
+      "blocks": [
+        {
+          "type": "disc",
+          "settings": {
+            "caption": "New arrivals"
+          }
+        },
+        {
+          "type": "disc",
+          "settings": {
+            "caption": "Best sellers"
+          }
+        },
+        {
+          "type": "disc",
+          "settings": {
+            "caption": "Featured"
+          }
+        },
+        {
+          "type": "disc",
+          "settings": {
+            "caption": "Accessories"
+          }
+        },
+        {
+          "type": "disc",
+          "settings": {
+            "caption": "Gifting"
+          }
+        },
+        {
+          "type": "disc",
+          "settings": {
+            "caption": "Sale"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
