@@ -101,6 +101,13 @@
     "cmm_mega_3_trigger_handle": "fat-dissolvers",
     "dg_whatsapp_enabled": true,
     "content_for_index": [],
+    "blocks": {
+      "10970333690120689042": {
+        "type": "shopify://apps/ex-b2b-vat-dual-price-display/blocks/storefrontDualPrice/a138b188-3580-40c8-ac6a-dc883732660b",
+        "disabled": false,
+        "settings": {}
+      }
+    },
     "color_palette": {
       "background": "#ffffff",
       "foreground": "#000000",
