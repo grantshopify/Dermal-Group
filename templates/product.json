@@ -287,8 +287,8 @@
         "image_be87aB": {
           "type": "image",
           "settings": {
-            "feature_title": "Free Shipping",
-            "feature_text": "<p>Order today, receive tomorrow</p>",
+            "feature_title": "Fast Shipping",
+            "feature_text": "<p>Royal Mail Tracked Delivery</p>",
             "icon_type": "default",
             "icon": "shield_check",
             "feature_url": ""
